@@ -102,7 +102,7 @@ const gulfPrompts = {
         b2b: {
             /**
              * Email subject line templates
-             * Placeholders: {businessName}, {benefit}
+             * Placeholders: {businessName}, {ownerName}, {benefit}
              */
             subject: [
                 "فرصة تعاون مع {businessName}",
@@ -467,7 +467,7 @@ const gulfPrompts = {
             channels: ["WhatsApp", "Email", "LinkedIn", "Instagram"],
             templateCount: {
                 whatsapp: 2,
-                email: this.email.b2b.subject.length + 3,
+                email: this.email.b2b.subject.length + this.email.followUpSequence.length,
                 social: 3,
                 ads: this.ads.headlines.length + this.ads.bodyCopy.length
             },
