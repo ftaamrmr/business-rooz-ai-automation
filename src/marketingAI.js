@@ -721,7 +721,14 @@ Make it specific to their business, include relevant market data, and create urg
         }
 
         const template = this.industryTemplates[industry];
-        const marketData = this.marketData[language === 'indonesian' ? 'indonesia' : 'global'];
+        let marketData;
+        if (language === 'gulf_arabic') {
+            marketData = this.marketData.gulf;
+        } else if (language === 'indonesian') {
+            marketData = this.marketData.indonesia;
+        } else {
+            marketData = this.marketData.global;
+        }
         
         const prompt = language === 'indonesian' ?
             `Buat email follow-up untuk ${lead.name} di industri ${industry}.
@@ -772,7 +779,14 @@ Make it specific to their business, include relevant market data, and create urg
         }
 
         const template = this.industryTemplates[industry];
-        const marketData = this.marketData[language === 'indonesian' ? 'indonesia' : 'global'];
+        let marketData;
+        if (language === 'gulf_arabic') {
+            marketData = this.marketData.gulf;
+        } else if (language === 'indonesian') {
+            marketData = this.marketData.indonesia;
+        } else {
+            marketData = this.marketData.global;
+        }
         
         const prompt = language === 'indonesian' ?
             `Buat email closing untuk ${lead.name} di industri ${industry}.
@@ -842,6 +856,15 @@ Make it specific to their business, include relevant market data, and create urg
                 education: "$12.4B EdTech, penetrasi online learning 78%",
                 realestate: "$420B pasar properti, PropTech adoption 34%"
             },
+            gulf_arabic: {
+                restaurant: "سوق المطاعم 28 مليار دولار، نمو 15% سنوياً",
+                automotive: "سوق السيارات 85 مليار دولار، التأجير 12 مليار",
+                retail: "سوق التجزئة 156 مليار دولار، التجارة الإلكترونية 42%",
+                professional: "الخدمات المهنية 78 مليار دولار، التحول الرقمي 67%",
+                healthcare: "القطاع الصحي 68 مليار دولار، الصحة الرقمية نمو 350%",
+                education: "قطاع التعليم 45 مليار دولار، التعليم عن بعد 65%",
+                realestate: "سوق العقار 890 مليار دولار، التقنية العقارية 28%"
+            },
             english: {
                 restaurant: "$4.2T global food service market, 8.7% digital ordering growth",
                 automotive: "$2.9T automotive market, 23% EV adoption rate",
@@ -854,7 +877,9 @@ Make it specific to their business, include relevant market data, and create urg
         };
 
         const langData = marketData[language] || marketData.indonesian;
-        return langData[industry] || (language === 'indonesian' ?
+        return langData[industry] || (language === 'gulf_arabic' ? 
+            "فرصة سوق متنامية" :
+            language === 'indonesian' ?
             "Peluang pasar Indonesia yang berkembang" :
             "Growing market opportunity");
     }
@@ -863,7 +888,8 @@ Make it specific to their business, include relevant market data, and create urg
     getAvailableLanguages() {
         return [
             { code: 'indonesian', name: 'Bahasa Indonesia', flag: '🇮🇩' },
-            { code: 'english', name: 'English', flag: '🇺🇸' }
+            { code: 'english', name: 'English', flag: '🇺🇸' },
+            { code: 'gulf_arabic', name: 'العربية الخليجية', flag: '🇦🇪' }
         ];
     }
 
@@ -885,6 +911,24 @@ Make it specific to their business, include relevant market data, and create urg
                     code: 'aggressive',
                     name: 'Agresif',
                     description: 'Langsung, menciptakan urgensi, fokus tindakan segera'
+                }
+            ];
+        } else if (language === 'gulf_arabic') {
+            return [
+                {
+                    code: 'conservative',
+                    name: 'محافظ',
+                    description: 'محترم، مهني، بناء الثقة تدريجياً'
+                },
+                {
+                    code: 'balanced',
+                    name: 'متوازن',
+                    description: 'نهج أعمال متوازن بين الاحترافية والود'
+                },
+                {
+                    code: 'aggressive',
+                    name: 'مباشر',
+                    description: 'مباشر، خلق إلحاح، التركيز على العمل الفوري'
                 }
             ];
         } else {
