@@ -11,6 +11,8 @@
 
 class GulfPrompts {
     constructor() {
+        // Market and language identification properties
+        // Useful for multi-market systems to identify prompt context
         this.market = 'GCC';
         this.languages = ['ar-SA', 'ar-KW', 'ar-AE', 'ar-BH'];
         this.version = '1.0.0';
@@ -363,7 +365,7 @@ ${companyName}`
                     copy: `**تعاني من تحديات في ${industry}؟**
 
 المشكلة: معظم الشركات تخسر فرص بسبب...
-الحل: ${serviceName} من ${params.companyName || 'شركتنا'}
+الحل: ${serviceName}
 
 ✨ ${benefit}
 ✨ دعم مستمر
@@ -535,11 +537,19 @@ ${benefit} مضمون أو نرجع فلوسك
             },
 
             exampleUsage: `// استخدام مع OpenAI
+const GulfPrompts = require('./src/gulf_prompts');
+const prompts = new GulfPrompts();
+const analysisPrompt = prompts.getBusinessAnalysisPrompt({
+    businessName: 'شركة الابتكار',
+    industry: 'تكنولوجيا',
+    location: 'الرياض'
+});
+
 const analysis = await openai.chat.completions.create({
     model: "gpt-4",
     messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt }
+        { role: "system", content: analysisPrompt.systemPrompt },
+        { role: "user", content: analysisPrompt.userPrompt }
     ],
     response_format: { type: "json_object" }
 });`
