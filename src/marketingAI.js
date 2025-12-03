@@ -23,6 +23,18 @@ class MarketingAI {
         }
     }
 
+    // Helper method to check if language is Gulf Arabic
+    isGulfLanguage(language) {
+        return language === 'gulf' || language === 'arabic';
+    }
+
+    // Helper method to get language key for data mapping
+    getLanguageKey(language) {
+        if (this.isGulfLanguage(language)) return 'gulf';
+        if (language === 'indonesian') return 'indonesian';
+        return 'english';
+    }
+
     loadIndustryTemplates() {
         return {
             restaurant: {
@@ -407,20 +419,24 @@ class MarketingAI {
             }
         };
 
-        let marketContext, marketData;
+        const langKey = this.getLanguageKey(language);
         
-        if (language === 'gulf' || language === 'arabic') {
-            marketContext = this.gulfContext;
-            marketData = this.marketData.gulf;
-        } else if (language === 'indonesian') {
-            marketContext = this.indonesianContext;
-            marketData = this.marketData.indonesia;
-        } else {
-            marketContext = this.englishContext;
-            marketData = this.marketData.global;
-        }
+        const contextMap = {
+            gulf: this.gulfContext,
+            indonesian: this.indonesianContext,
+            english: this.englishContext
+        };
+        
+        const dataMap = {
+            gulf: this.marketData.gulf,
+            indonesian: this.marketData.indonesia,
+            english: this.marketData.global
+        };
+        
+        const marketContext = contextMap[langKey];
+        const marketData = dataMap[langKey];
 
-        if (language === 'gulf' || language === 'arabic') {
+        if (this.isGulfLanguage(language)) {
             return `أنت متخصص في التسويق B2B للسوق الخليجي، خبير في قطاع ${industry}.
 
 الخبرة: فهم عميق لتحديات الأعمال في ${industry} بمنطقة الخليج
@@ -525,20 +541,24 @@ Generate both EMAIL and WHATSAPP templates with:
     }
 
     buildIndustryPrompt(lead, template, yourService, campaignStyle, language = 'indonesian') {
-        let marketData, context;
+        const langKey = this.getLanguageKey(language);
         
-        if (language === 'gulf' || language === 'arabic') {
-            marketData = this.marketData.gulf;
-            context = this.gulfContext;
-        } else if (language === 'indonesian') {
-            marketData = this.marketData.indonesia;
-            context = this.indonesianContext;
-        } else {
-            marketData = this.marketData.global;
-            context = this.englishContext;
-        }
+        const contextMap = {
+            gulf: this.gulfContext,
+            indonesian: this.indonesianContext,
+            english: this.englishContext
+        };
         
-        if (language === 'gulf' || language === 'arabic') {
+        const dataMap = {
+            gulf: this.marketData.gulf,
+            indonesian: this.marketData.indonesia,
+            english: this.marketData.global
+        };
+        
+        const context = contextMap[langKey];
+        const marketData = dataMap[langKey];
+        
+        if (this.isGulfLanguage(language)) {
             return `أنشئ محتوى تسويقي مخصص لهذا النشاط التجاري:
 
 معلومات النشاط:
@@ -715,19 +735,18 @@ Make it specific to their business, include relevant market data, and create urg
         }
 
         const template = this.industryTemplates[industry];
-        let marketData;
+        const langKey = this.getLanguageKey(language);
         
-        if (language === 'gulf' || language === 'arabic') {
-            marketData = this.marketData.gulf;
-        } else if (language === 'indonesian') {
-            marketData = this.marketData.indonesia;
-        } else {
-            marketData = this.marketData.global;
-        }
+        const dataMap = {
+            gulf: this.marketData.gulf,
+            indonesian: this.marketData.indonesia,
+            english: this.marketData.global
+        };
         
+        const marketData = dataMap[langKey];
         let prompt;
         
-        if (language === 'gulf' || language === 'arabic') {
+        if (this.isGulfLanguage(language)) {
             prompt = `أنشئ إيميل متابعة لـ ${lead.name} في قطاع ${industry}.
             هذه هي نقطة الاتصال الثانية - افترض أنهم شاهدوا الإيميل الأول.
             ركز على دراسات الحالة، الإثبات الاجتماعي، والفوائد المحددة مع البيانات.
@@ -793,19 +812,18 @@ Make it specific to their business, include relevant market data, and create urg
         }
 
         const template = this.industryTemplates[industry];
-        let marketData;
+        const langKey = this.getLanguageKey(language);
         
-        if (language === 'gulf' || language === 'arabic') {
-            marketData = this.marketData.gulf;
-        } else if (language === 'indonesian') {
-            marketData = this.marketData.indonesia;
-        } else {
-            marketData = this.marketData.global;
-        }
+        const dataMap = {
+            gulf: this.marketData.gulf,
+            indonesian: this.marketData.indonesia,
+            english: this.marketData.global
+        };
         
+        const marketData = dataMap[langKey];
         let prompt;
         
-        if (language === 'gulf' || language === 'arabic') {
+        if (this.isGulfLanguage(language)) {
             prompt = `أنشئ إيميل ختامي لـ ${lead.name} في قطاع ${industry}.
             هذه هي نقطة الاتصال الأخيرة - وضح الخطوات التالية بشكل واضح.
             أضف عرض محدود الوقت، وضمانات، ودعوة قوية للتواصل.
@@ -910,12 +928,16 @@ Make it specific to their business, include relevant market data, and create urg
             }
         };
 
-        const langKey = (language === 'gulf' || language === 'arabic') ? 'gulf' : 
-                        (language === 'indonesian' ? 'indonesian' : 'english');
+        const langKey = this.getLanguageKey(language);
         const langData = marketData[langKey];
-        return langData[industry] || (langKey === 'gulf' ? 
-            "فرصة سوقية خليجية متنامية" :
-            (langKey === 'indonesian' ? "Peluang pasar Indonesia yang berkembang" : "Growing market opportunity"));
+        
+        const defaultMessages = {
+            gulf: "فرصة سوقية خليجية متنامية",
+            indonesian: "Peluang pasar Indonesia yang berkembang",
+            english: "Growing market opportunity"
+        };
+        
+        return langData[industry] || defaultMessages[langKey];
     }
 
     // New method to get available languages
@@ -929,7 +951,7 @@ Make it specific to their business, include relevant market data, and create urg
 
     // New method to get campaign styles with descriptions
     getCampaignStyles(language = 'indonesian') {
-        if (language === 'gulf' || language === 'arabic') {
+        if (this.isGulfLanguage(language)) {
             return [
                 {
                     code: 'conservative',
@@ -1020,8 +1042,7 @@ Make it specific to their business, include relevant market data, and create urg
             }
         };
 
-        const langKey = (language === 'gulf' || language === 'arabic') ? 'gulf' : 
-                        (language === 'indonesian' ? 'indonesian' : 'english');
+        const langKey = this.getLanguageKey(language);
         const langDesc = descriptions[langKey];
         
         return industries.map(industry => ({
