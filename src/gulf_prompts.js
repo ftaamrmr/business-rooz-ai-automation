@@ -462,13 +462,12 @@ const gulfPrompts = {
     getMetadata: function() {
         return {
             version: "1.0.0",
-            lastUpdated: "2024-12-03",
             targetMarkets: ["Saudi Arabia 🇸🇦", "Kuwait 🇰🇼", "UAE 🇦🇪", "Bahrain 🇧🇭"],
             language: "Gulf Arabic (formal)",
             channels: ["WhatsApp", "Email", "LinkedIn", "Instagram"],
             templateCount: {
                 whatsapp: 2,
-                email: Object.keys(this.email.b2b.subject).length + 3,
+                email: this.email.b2b.subject.length + 3,
                 social: 3,
                 ads: this.ads.headlines.length + this.ads.bodyCopy.length
             },
