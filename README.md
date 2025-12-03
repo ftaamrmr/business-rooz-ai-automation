@@ -40,6 +40,8 @@ The fastest way to try this project! No local setup required.
 4. Run `npm run web` to start the dashboard
 5. Access the web interface through the forwarded port 3000
 
+📚 **[Complete Codespaces Guide](docs/CODESPACES_GUIDE.md)** - Detailed instructions, tips, and troubleshooting
+
 ### Option 2: Local Installation
 
 #### Prerequisites
@@ -296,7 +298,7 @@ Please read our [DISCLAIMER.md](DISCLAIMER.md) for full legal information.
 ## 📞 Support & Documentation
 
 ### 📚 Documentation
-- **[GitHub Codespaces Guide](.devcontainer/README.md)**: Development in the cloud with Codespaces
+- **[GitHub Codespaces Guide](docs/CODESPACES_GUIDE.md)**: Complete guide for cloud development
 - **[Web Dashboard Guide](docs/WEB_DASHBOARD_GUIDE.md)**: Complete user guide for the web interface
 - **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)**: Production deployment instructions
 - **[API Documentation](docs/API.md)**: REST API reference (coming soon)
