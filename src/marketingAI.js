@@ -5,6 +5,7 @@ class MarketingAI {
         this.openai = null;
         this.initOpenAI();
         this.industryTemplates = this.loadIndustryTemplates();
+        this.gulfContext = this.loadGulfContext();
         this.indonesianContext = this.loadIndonesianContext();
         this.englishContext = this.loadEnglishContext();
         this.marketData = this.loadRealMarketData();
@@ -22,202 +23,235 @@ class MarketingAI {
         }
     }
 
+    // Helper method to check if language is Gulf Arabic
+    // Accepts both 'gulf' and 'arabic' for backward compatibility and flexibility
+    isGulfLanguage(language) {
+        return language === 'gulf' || language === 'arabic';
+    }
+
+    // Helper method to get language key for data mapping
+    getLanguageKey(language) {
+        if (this.isGulfLanguage(language)) return 'gulf';
+        if (language === 'indonesian') return 'indonesian';
+        return 'english';
+    }
+
     loadIndustryTemplates() {
         return {
             restaurant: {
                 industry: 'restaurant',
                 painPoints: [
-                    "Pesanan online hanya 23% dari total revenue (rata-rata industri 45%)",
-                    "Kehilangan 67% customer karena tidak ada loyalty program",
-                    "Food waste 15-20% karena inventory management manual",
-                    "Customer acquisition cost naik 156% di platform delivery",
-                    "Margin profit turun 8-12% karena komisi platform tinggi"
+                    "الطلبات الإلكترونية تشكل 23% فقط من إيراداتكم، بينما المعدل في السوق الخليجي 45%",
+                    "فقدان 67% من العملاء بسبب عدم وجود برنامج ولاء",
+                    "هدر 15-20% من الطعام بسبب الإدارة اليدوية للمخزون",
+                    "تكلفة اكتساب العملاء ارتفعت 156% على منصات التوصيل",
+                    "هامش الربح انخفض 8-12% بسبب عمولات المنصات العالية"
                 ],
                 solutions: [
-                    "Sistem POS terintegrasi dengan direct online ordering (bypass komisi 20-30%)",
-                    "AI-powered inventory management (reduce waste hingga 40%)",
-                    "Customer loyalty program dengan WhatsApp automation",
-                    "Social media marketing dengan ROI tracking",
-                    "Dynamic pricing system berdasarkan demand patterns"
+                    "نظام POS متكامل مع طلبات إلكترونية مباشرة (توفير عمولات 20-30%)",
+                    "إدارة مخزون ذكية بالذكاء الاصطناعي (تقليل الهدر حتى 40%)",
+                    "برنامج ولاء العملاء عبر واتساب الأعمال",
+                    "تسويق عبر وسائل التواصل الاجتماعي مع تتبع العائد على الاستثمار",
+                    "نظام تسعير ديناميكي حسب الطلب"
                 ],
                 benefits: [
-                    "Peningkatan direct online orders 67% dalam 3 bulan",
-                    "Profit margin naik 15-25% dengan reduced platform dependency",
-                    "Customer retention rate meningkat 89% dengan loyalty program",
-                    "Food waste berkurang 35% dengan smart inventory",
-                    "Marketing ROI meningkat 234% dengan targeted campaigns"
+                    "زيادة الطلبات المباشرة 67% خلال 3 أشهر",
+                    "هامش الربح يرتفع 15-25% مع تقليل الاعتماد على المنصات",
+                    "معدل الاحتفاظ بالعملاء يزيد 89% مع برنامج الولاء",
+                    "تقليل هدر الطعام 35% مع الإدارة الذكية",
+                    "العائد على الاستثمار التسويقي يزيد 234% مع الحملات الموجهة"
                 ],
-                localContext: "Jakarta F&B market $2.8B dengan 78% konsumen order online weekly",
-                urgency: "Restaurant dengan digital presence tumbuh 156% faster, 34% yang tidak adapt tutup dalam 2 tahun",
-                caseStudy: "Warung Tekko Jakarta: Revenue naik 189% dalam 6 bulan setelah implementasi sistem digital"
+                localContext: "سوق المطاعم الخليجي $8.5B مع 82% من المستهلكين يطلبون إلكترونياً أسبوعياً",
+                urgency: "المطاعم ذات الحضور الرقمي تنمو 156% أسرع، 34% التي لا تتكيف تغلق خلال سنتين",
+                caseStudy: "مطعم في دبي: زادت الإيرادات 85% خلال 4 أشهر بعد تطبيق نظام الطلب الإلكتروني"
             },
             automotive: {
                 industry: 'automotive',
                 painPoints: [
-                    "Manual booking menyebabkan 43% missed opportunities",
-                    "Downtime kendaraan 23% karena maintenance tidak terjadwal",
-                    "Customer churn rate 56% karena service response lambat",
-                    "Fuel cost overrun 18% tanpa route optimization",
-                    "Revenue loss $2,300/bulan per vehicle karena inefficiency"
+                    "الحجز اليدوي يسبب فقدان 43% من الفرص",
+                    "توقف المركبات 23% بسبب الصيانة غير المجدولة",
+                    "معدل فقدان العملاء 56% بسبب بطء الاستجابة",
+                    "تجاوز تكاليف الوقود 18% بدون تحسين المسارات",
+                    "خسارة إيرادات 8,500 ريال شهرياً لكل مركبة بسبب عدم الكفاءة"
                 ],
                 solutions: [
-                    "Automated booking system dengan real-time availability",
-                    "Predictive maintenance dengan IoT sensors",
-                    "WhatsApp Business API untuk instant customer support",
-                    "AI route optimization untuk fuel efficiency",
-                    "Dynamic pricing berdasarkan demand dan competitor analysis"
+                    "نظام حجز آلي مع توفر الوقت الفعلي",
+                    "صيانة تنبؤية مع مستشعرات IoT",
+                    "واتساب الأعمال API لدعم العملاء الفوري",
+                    "تحسين المسارات بالذكاء الاصطناعي لكفاءة الوقود",
+                    "تسعير ديناميكي حسب الطلب وتحليل المنافسين"
                 ],
                 benefits: [
-                    "Booking efficiency naik 78% dengan automated system",
-                    "Maintenance cost turun 34% dengan predictive scheduling",
-                    "Customer satisfaction score naik dari 6.2 ke 8.7/10",
-                    "Fuel cost berkurang 22% dengan smart routing",
-                    "Revenue per vehicle naik $1,890/bulan average"
+                    "كفاءة الحجز ترتفع 78% مع النظام الآلي",
+                    "تكاليف الصيانة تنخفض 34% مع الجدولة التنبؤية",
+                    "رضا العملاء يرتفع من 6.2 إلى 8.7/10",
+                    "تكاليف الوقود تقل 22% مع المسارات الذكية",
+                    "الإيرادات لكل مركبة ترتفع 7,000 ريال شهرياً"
                 ],
-                localContext: "Indonesia automotive rental market $8.5B, tumbuh 23% annually dengan 89% masih manual",
-                urgency: "Grab dan Gojek dominasi 67% market share, traditional players harus digitize atau kalah",
-                caseStudy: "CV Maju Jaya Surabaya: Fleet utilization naik 145% setelah implementasi digital system"
+                localContext: "سوق تأجير السيارات الخليجي $12.5B، ينمو 23% سنوياً مع 89% لا تزال يدوية",
+                urgency: "Careem و Uber يسيطران على 67% من حصة السوق، اللاعبون التقليديون يجب أن يتحولوا رقمياً",
+                caseStudy: "شركة تأجير في الرياض: استخدام الأسطول زاد 145% بعد تطبيق النظام الرقمي"
             },
             retail: {
                 industry: 'retail',
                 painPoints: [
-                    "Offline sales turun 34% sejak 2020, online hanya 12% dari total revenue",
-                    "Stockout rate 28% karena inventory management manual",
-                    "Customer lifetime value turun 45% tanpa personalization",
-                    "Marketing spend waste 67% karena tidak ada targeting",
-                    "Kehilangan 89% potential customers yang browse tapi tidak beli"
+                    "المبيعات التقليدية انخفضت 34% منذ 2020، الإلكترونية 12% فقط من الإيرادات",
+                    "معدل نفاد المخزون 28% بسبب الإدارة اليدوية",
+                    "قيمة عمر العميل انخفضت 45% بدون تخصيص",
+                    "هدر 67% من ميزانية التسويق بسبب عدم الاستهداف",
+                    "فقدان 89% من العملاء المحتملين الذين يتصفحون دون شراء"
                 ],
                 solutions: [
-                    "Omnichannel e-commerce dengan inventory sync real-time",
-                    "AI-powered personalization engine untuk product recommendations",
-                    "Customer data platform dengan behavioral tracking",
-                    "Automated email/WhatsApp marketing dengan segmentation",
-                    "Social commerce integration (Instagram Shop, TikTok Shop)"
+                    "تجارة إلكترونية متعددة القنوات مع مزامنة المخزون الفوري",
+                    "محرك تخصيص بالذكاء الاصطناعي لتوصيات المنتجات",
+                    "منصة بيانات العملاء مع تتبع السلوك",
+                    "تسويق آلي عبر البريد الإلكتروني/واتساب مع التقسيم",
+                    "تكامل التجارة الاجتماعية (Instagram Shop، TikTok Shop)"
                 ],
                 benefits: [
-                    "Online revenue contribution naik dari 12% ke 67% dalam 8 bulan",
-                    "Inventory turnover rate meningkat 156% dengan demand forecasting",
-                    "Customer lifetime value naik 234% dengan personalization",
-                    "Marketing ROI meningkat 445% dengan targeted campaigns",
-                    "Conversion rate naik dari 1.2% ke 4.8% dengan optimization"
+                    "مساهمة الإيرادات الإلكترونية ترتفع من 12% إلى 67% خلال 8 أشهر",
+                    "معدل دوران المخزون يزيد 156% مع التنبؤ بالطلب",
+                    "قيمة عمر العميل ترتفع 234% مع التخصيص",
+                    "العائد على الاستثمار التسويقي يزيد 445% مع الحملات الموجهة",
+                    "معدل التحويل يرتفع من 1.2% إلى 4.8% مع التحسين"
                 ],
-                localContext: "Indonesia retail market $58.3B, e-commerce penetration baru 19.6% vs global 23.4%",
-                urgency: "Tokopedia, Shopee dominasi 78% online retail, independent retailers kehilangan 23% market share annually",
-                caseStudy: "Toko Elektronik Medan: Revenue naik 267% dalam 1 tahun dengan omnichannel strategy"
+                localContext: "سوق التجزئة الخليجي $95B، اختراق التجارة الإلكترونية 28.6% مقابل 23.4% عالمياً",
+                urgency: "Noon و Amazon يسيطران على 78% من التجزئة الإلكترونية، التجار المستقلون يفقدون 23% من حصة السوق سنوياً",
+                caseStudy: "متجر إلكترونيات في الكويت: الإيرادات زادت 267% خلال سنة مع استراتيجية متعددة القنوات"
             },
             professional: {
                 industry: 'professional',
                 painPoints: [
-                    "Client acquisition 89% dari referral, growth terbatas 12% annually",
-                    "Proposal conversion rate hanya 23% karena manual process",
-                    "Time spent on admin 45% dari total working hours",
-                    "Average project value stagnan karena tidak ada value positioning",
-                    "Client churn 34% karena poor follow-up dan communication"
+                    "اكتساب العملاء 89% من الإحالات، النمو محدود 12% سنوياً",
+                    "معدل تحويل العروض 23% فقط بسبب العملية اليدوية",
+                    "الوقت المستهلك في الإدارة 45% من ساعات العمل",
+                    "متوسط قيمة المشروع راكد بسبب عدم تحديد القيمة",
+                    "فقدان 34% من العملاء بسبب ضعف المتابعة والتواصل"
                 ],
                 solutions: [
-                    "Professional website dengan portfolio showcase dan testimonials",
-                    "CRM system dengan automated client nurturing",
-                    "Online booking system dengan calendar integration",
-                    "Proposal automation dengan dynamic pricing",
-                    "Content marketing strategy untuk thought leadership"
+                    "موقع احترافي مع عرض الأعمال والشهادات",
+                    "نظام CRM مع رعاية العملاء الآلية",
+                    "نظام حجز إلكتروني مع تكامل التقويم",
+                    "أتمتة العروض مع التسعير الديناميكي",
+                    "استراتيجية تسويق بالمحتوى للريادة الفكرية"
                 ],
                 benefits: [
-                    "Lead generation naik 289% dengan digital presence",
-                    "Proposal win rate meningkat dari 23% ke 67%",
-                    "Administrative time berkurang 56% dengan automation",
-                    "Average project value naik 134% dengan better positioning",
-                    "Client retention rate meningkat ke 89% dengan systematic follow-up"
+                    "توليد العملاء المحتملين يزيد 289% مع الحضور الرقمي",
+                    "معدل نجاح العروض يرتفع من 23% إلى 67%",
+                    "الوقت الإداري ينخفض 56% مع الأتمتة",
+                    "متوسط قيمة المشروع يزيد 134% مع تحديد أفضل للقيمة",
+                    "معدل الاحتفاظ بالعملاء يرتفع إلى 89% مع المتابعة المنظمة"
                 ],
-                localContext: "Indonesia professional services market $22.1B, hanya 34% yang fully digital",
-                urgency: "Freelancer dan agency digital tumbuh 456% post-pandemic, traditional consultants kehilangan clients",
-                caseStudy: "Konsultan Hukum Jakarta: Client base naik 345% dalam 10 bulan dengan digital transformation"
+                localContext: "سوق الخدمات المهنية الخليجي $28.5B، 34% فقط رقمية بالكامل",
+                urgency: "المستقلون والوكالات الرقمية نمت 456% بعد الجائحة، الاستشاريون التقليديون يفقدون العملاء",
+                caseStudy: "مكتب استشاري قانوني في جدة: قاعدة العملاء زادت 345% خلال 10 أشهر مع التحول الرقمي"
             },
             healthcare: {
                 industry: 'healthcare',
                 painPoints: [
-                    "No-show rate 34% karena appointment booking manual",
-                    "Patient waiting time rata-rata 67 menit, satisfaction score 5.8/10",
-                    "Administrative cost 23% dari total revenue karena paper-based",
-                    "Patient follow-up rate hanya 45% karena manual tracking",
-                    "Revenue loss $3,400/bulan karena scheduling inefficiency"
+                    "معدل عدم الحضور 34% بسبب الحجز اليدوي",
+                    "وقت انتظار المرضى 67 دقيقة، درجة الرضا 5.8/10",
+                    "التكاليف الإدارية 23% من الإيرادات بسبب الأوراق",
+                    "معدل متابعة المرضى 45% فقط بسبب التتبع اليدوي",
+                    "خسارة إيرادات 12,500 ريال شهرياً بسبب عدم كفاءة الجدولة"
                 ],
                 solutions: [
-                    "Online appointment system dengan automated reminders",
-                    "Digital patient records dengan cloud backup",
-                    "Telemedicine platform untuk consultation dan follow-up",
-                    "WhatsApp integration untuk patient communication",
-                    "Practice management system dengan billing automation"
+                    "نظام حجز مواعيد إلكتروني مع تذكيرات آلية",
+                    "سجلات مرضى رقمية مع نسخ احتياطي سحابي",
+                    "منصة طب عن بعد للاستشارات والمتابعة",
+                    "تكامل واتساب لتواصل المرضى",
+                    "نظام إدارة العيادة مع فوترة آلية"
                 ],
                 benefits: [
-                    "No-show rate turun ke 12% dengan automated reminders",
-                    "Patient satisfaction naik ke 8.9/10 dengan reduced waiting",
-                    "Administrative cost berkurang 45% dengan digitalization",
-                    "Patient follow-up rate naik ke 89% dengan systematic tracking",
-                    "Practice revenue naik 67% dengan better scheduling efficiency"
+                    "معدل عدم الحضور ينخفض إلى 12% مع التذكيرات الآلية",
+                    "رضا المرضى يرتفع إلى 8.9/10 مع تقليل الانتظار",
+                    "التكاليف الإدارية تنخفض 45% مع الرقمنة",
+                    "معدل متابعة المرضى يرتفع إلى 89% مع التتبع المنظم",
+                    "إيرادات العيادة ترتفع 67% مع كفاءة الجدولة"
                 ],
-                localContext: "Indonesia healthcare market $28.7B, telemedicine adoption naik 400% post-pandemic",
-                urgency: "89% pasien expect digital services, practices tanpa digital akan kehilangan 45% patients",
-                caseStudy: "Klinik Sehat Bandung: Patient volume naik 178% dengan digital appointment system"
+                localContext: "سوق الرعاية الصحية الخليجي $42B، اعتماد الطب عن بعد زاد 400% بعد الجائحة",
+                urgency: "89% من المرضى يتوقعون خدمات رقمية، العيادات بدون رقمنة ستفقد 45% من المرضى",
+                caseStudy: "عيادة في البحرين: حجم المرضى زاد 178% مع نظام المواعيد الرقمي"
             },
             education: {
                 industry: 'education',
                 painPoints: [
-                    "Student retention rate hanya 67% karena engagement rendah",
-                    "Administrative workload 56% dari total staff time",
-                    "Course completion rate 34% tanpa proper tracking",
-                    "Revenue per student stagnan karena tidak ada upselling system",
-                    "Competition dengan online platforms menyebabkan 23% student loss"
+                    "معدل الاحتفاظ بالطلاب 67% فقط بسبب ضعف التفاعل",
+                    "عبء العمل الإداري 56% من وقت الموظفين",
+                    "معدل إتمام الدورات 34% بدون تتبع مناسب",
+                    "الإيراد لكل طالب راكد بسبب عدم وجود نظام بيع إضافي",
+                    "المنافسة مع المنصات الإلكترونية تسببت في فقدان 23% من الطلاب"
                 ],
                 solutions: [
-                    "Learning Management System dengan gamification",
-                    "Student portal dengan progress tracking dan certificates",
-                    "Automated administrative workflows",
-                    "Hybrid learning platform dengan live dan recorded sessions",
-                    "Parent communication system dengan progress reports"
+                    "نظام إدارة التعلم مع التلعيب",
+                    "بوابة الطلاب مع تتبع التقدم والشهادات",
+                    "سير عمل إداري آلي",
+                    "منصة تعلم هجينة مع جلسات مباشرة ومسجلة",
+                    "نظام تواصل أولياء الأمور مع تقارير التقدم"
                 ],
                 benefits: [
-                    "Student retention naik ke 89% dengan engaging digital experience",
-                    "Administrative efficiency meningkat 67% dengan automation",
-                    "Course completion rate naik ke 78% dengan proper tracking",
-                    "Revenue per student naik 145% dengan upselling opportunities",
-                    "Competitive advantage dengan modern learning experience"
+                    "الاحتفاظ بالطلاب يرتفع إلى 89% مع تجربة رقمية جذابة",
+                    "الكفاءة الإدارية تزيد 67% مع الأتمتة",
+                    "معدل إتمام الدورات يرتفع إلى 78% مع التتبع المناسب",
+                    "الإيراد لكل طالب يزيد 145% مع فرص البيع الإضافي",
+                    "ميزة تنافسية مع تجربة تعلم حديثة"
                 ],
-                localContext: "Indonesia EdTech market $12.4B, online learning penetration 78% post-pandemic",
-                urgency: "Gen Z students expect digital-first education, traditional institutions kehilangan 34% enrollment",
-                caseStudy: "Bimbel Sukses Jakarta: Student enrollment naik 234% dengan hybrid learning platform"
+                localContext: "سوق تقنية التعليم الخليجي $8.2B، اختراق التعلم الإلكتروني 78% بعد الجائحة",
+                urgency: "طلاب الجيل Z يتوقعون تعليماً رقمياً أولاً، المؤسسات التقليدية تفقد 34% من التسجيل",
+                caseStudy: "مركز تدريب في دبي: تسجيل الطلاب زاد 234% مع منصة التعلم الهجينة"
             },
             realestate: {
                 industry: 'realestate',
                 painPoints: [
-                    "Lead conversion rate hanya 8% karena poor follow-up system",
-                    "Property viewing no-show rate 45% tanpa proper scheduling",
-                    "Sales cycle rata-rata 8.5 bulan, terlalu lama vs competitor 5.2 bulan",
-                    "Marketing spend 67% tidak terukur ROI-nya",
-                    "Client database tidak terorganisir, kehilangan 56% repeat business"
+                    "معدل تحويل العملاء المحتملين 8% فقط بسبب ضعف نظام المتابعة",
+                    "معدل عدم حضور معاينة العقار 45% بدون جدولة مناسبة",
+                    "دورة المبيعات 8.5 أشهر، طويلة جداً مقارنة بالمنافسين 5.2 أشهر",
+                    "67% من إنفاق التسويق غير قابل لقياس العائد",
+                    "قاعدة بيانات العملاء غير منظمة، فقدان 56% من الأعمال المتكررة"
                 ],
                 solutions: [
-                    "Property CRM dengan lead scoring dan automated nurturing",
-                    "Virtual tour technology dengan 360° property showcase",
-                    "WhatsApp Business integration untuk instant client communication",
-                    "Market analysis dashboard dengan pricing recommendations",
-                    "Social media advertising dengan retargeting campaigns"
+                    "نظام CRM عقاري مع تصنيف العملاء المحتملين ورعاية آلية",
+                    "تقنية الجولات الافتراضية مع عرض العقار 360°",
+                    "تكامل واتساب الأعمال للتواصل الفوري مع العملاء",
+                    "لوحة تحليل السوق مع توصيات التسعير",
+                    "إعلانات وسائل التواصل الاجتماعي مع حملات إعادة الاستهداف"
                 ],
                 benefits: [
-                    "Lead conversion rate naik ke 34% dengan systematic follow-up",
-                    "Property viewing show-up rate naik ke 89% dengan better scheduling",
-                    "Sales cycle berkurang ke 5.8 bulan dengan streamlined process",
-                    "Marketing ROI meningkat 267% dengan targeted campaigns",
-                    "Repeat business naik 178% dengan organized client database"
+                    "معدل تحويل العملاء المحتملين يرتفع إلى 34% مع المتابعة المنظمة",
+                    "معدل حضور معاينة العقار يرتفع إلى 89% مع جدولة أفضل",
+                    "دورة المبيعات تقل إلى 5.8 أشهر مع عملية مبسطة",
+                    "العائد على الاستثمار التسويقي يزيد 267% مع الحملات الموجهة",
+                    "الأعمال المتكررة ترتفع 178% مع قاعدة بيانات منظمة"
                 ],
-                localContext: "Indonesia property market $420B, PropTech adoption baru 34% vs global 67%",
-                urgency: "99.co, Rumah123 dominasi 78% online property search, independent agents kehilangan visibility",
-                caseStudy: "Property Agent Surabaya: Sales volume naik 289% dalam 1 tahun dengan digital tools"
+                localContext: "سوق العقارات الخليجي $620B، اعتماد PropTech 34% مقابل 67% عالمياً",
+                urgency: "Bayut و Property Finder يسيطران على 78% من البحث العقاري الإلكتروني، الوكلاء المستقلون يفقدون الظهور",
+                caseStudy: "وكيل عقاري في أبوظبي: حجم المبيعات زاد 289% خلال سنة مع الأدوات الرقمية"
             }
         };
     }
 
     loadRealMarketData() {
         return {
+            gulf: {
+                digitalAdoption: "95% من سكان الخليج يستخدمون الهواتف الذكية، 78% يتسوقون إلكترونياً",
+                ecommerceGrowth: "نمو 25% سنوياً، السوق يصل إلى 50 مليار دولار في 2024",
+                paymentMethods: "Apple Pay (38%)، Mada (45%)، Tabby (28%)، Tamara (25%)",
+                socialMedia: "انستقرام 45 مليون مستخدم، واتساب أعمال 15 مليون+ شركة صغيرة ومتوسطة",
+                marketSize: {
+                    restaurant: "$8.5B سوق المطاعم الخليجي، نمو 12% سنوياً",
+                    automotive: "$12.5B قطاع النقل، خدمات التوصيل $3.2B",
+                    retail: "$95B سوق التجزئة، اعتماد القنوات المتعددة 67%",
+                    healthcare: "$42B الرعاية الصحية، نمو الطب عن بعد 400%",
+                    education: "$8.2B تقنية التعليم، اختراق التعلم الإلكتروني 78%",
+                    realestate: "$620B سوق العقارات، اعتماد PropTech 34%",
+                    professional: "$28.5B الخدمات المهنية، الرقمنة 45%"
+                },
+                trends: {
+                    current: "اعتماد الذكاء الاصطناعي 156%، رؤية 2030، التحول الرقمي في الخليج",
+                    emerging: "التجارة الصوتية، التجارة الاجتماعية، التخصيص الفائق",
+                    challenges: "المنافسة القوية، توقعات الجودة العالية، الامتثال للأنظمة المحلية"
+                }
+            },
             indonesia: {
                 digitalAdoption: "88% of Indonesians use smartphones, 77% shop online",
                 ecommerceGrowth: "35% YoY growth, reaching $55B in 2024",
@@ -277,6 +311,31 @@ class MarketingAI {
                 technology: "Rapid tech evolution demands continuous adaptation",
                 regulation: "GDPR, data privacy, and compliance requirements",
                 talent: "Skills gap in digital marketing and technology"
+            }
+        };
+    }
+
+    loadGulfContext() {
+        return {
+            businessCulture: {
+                relationship: "العلاقات الشخصية والثقة أساس النجاح في الأعمال الخليجية",
+                communication: "التواصل المحترم والمباشر مع احترام الوقت",
+                decision: "القرارات تُتخذ بناءً على الثقة والسمعة والنتائج المثبتة",
+                trust: "بناء الثقة يحتاج وقت، لكنه استثمار طويل المدى",
+                social: "السمعة والتوصيات الشخصية لها تأثير كبير"
+            },
+            marketTrends: {
+                digital: "95% من السكان يستخدمون الهواتف الذكية",
+                ecommerce: "التجارة الإلكترونية تنمو 25% سنوياً",
+                social: "انستقرام وواتساب هي المنصات الرئيسية للأعمال",
+                payment: "Apple Pay، Mada، Tabby، Tamara هي طرق الدفع الشائعة",
+                delivery: "التوصيل في نفس اليوم أصبح توقع أساسي"
+            },
+            challenges: {
+                competition: "منافسة قوية تتطلب التميز والجودة",
+                expectations: "توقعات عالية للخدمة والجودة",
+                talent: "الحاجة لكوادر متخصصة في التسويق الرقمي",
+                regulation: "الامتثال للأنظمة المحلية مهم"
             }
         };
     }
@@ -345,23 +404,71 @@ class MarketingAI {
     getSystemPrompt(industry, campaignStyle, language = 'indonesian') {
         const styleInstructions = {
             conservative: {
+                gulf: "محترم ومهني، نبني الثقة خطوة بخطوة. نركز على العلاقات طويلة المدى.",
                 indonesian: "Sopan, profesional, dan membangun kepercayaan secara bertahap. Fokus pada hubungan jangka panjang.",
                 english: "Respectful, professional, and build trust gradually. Focus on long-term relationship building."
             },
             balanced: {
+                gulf: "نهج عملي متوازن يجمع بين الاحترافية والود.",
                 indonesian: "Pendekatan bisnis standar dengan keseimbangan profesionalisme dan keramahan.",
                 english: "Standard business approach with balanced professionalism and approachability."
             },
             aggressive: {
+                gulf: "مباشر، نوضح الفرصة، ونركز على اتخاذ القرار. نبرز الميزة التنافسية.",
                 indonesian: "Langsung, ciptakan urgensi, dan fokus pada tindakan segera. Tekankan keunggulan kompetitif.",
                 english: "Direct, create urgency, and focus on immediate action. Emphasize competitive advantages."
             }
         };
 
-        const marketContext = language === 'indonesian' ? this.indonesianContext : this.englishContext;
-        const marketData = this.marketData[language === 'indonesian' ? 'indonesia' : 'global'];
+        const langKey = this.getLanguageKey(language);
+        
+        const contextMap = {
+            gulf: this.gulfContext,
+            indonesian: this.indonesianContext,
+            english: this.englishContext
+        };
+        
+        const dataMap = {
+            gulf: this.marketData.gulf,
+            indonesian: this.marketData.indonesia,
+            english: this.marketData.global
+        };
+        
+        const marketContext = contextMap[langKey];
+        const marketData = dataMap[langKey];
 
-        if (language === 'indonesian') {
+        if (this.isGulfLanguage(language)) {
+            return `أنت متخصص في التسويق B2B للسوق الخليجي، خبير في قطاع ${industry}.
+
+الخبرة: فهم عميق لتحديات الأعمال في ${industry} بمنطقة الخليج
+الوعي الثقافي: أسلوب التواصل التجاري الخليجي المحترم والمباشر
+السوق المحلي: الاتجاهات والفرص في سوق ${industry} الخليجي
+
+أسلوب التواصل: ${styleInstructions[campaignStyle].gulf}
+
+بيانات السوق:
+- التحول الرقمي: ${marketData.digitalAdoption}
+- نمو التجارة الإلكترونية: ${marketData.ecommerceGrowth}
+- طرق الدفع: ${marketData.paymentMethods}
+- حجم سوق ${industry}: ${marketData.marketSize[industry]}
+
+المتطلبات:
+1. اكتب بالعربية الخليجية الرسمية مع المصطلحات التقنية بالإنجليزية عند الحاجة
+2. استخدم أسلوب تواصل محترم ومباشر يناسب رجال الأعمال الخليجيين
+3. ركز على القيمة الحقيقية والنتائج المثبتة
+4. تجنب المبالغة والوعود غير الواقعية
+5. ابني الثقة من خلال الشفافية والمصداقية
+6. استخدم بيانات حقيقية لدعم النقاط
+7. اجعل الرسالة قصيرة وواضحة ومباشرة
+
+صيغة المخرجات:
+قالب إيميل وواتساب مع:
+- عنوان واضح وجذاب
+- نقاط الألم الحقيقية للصناعة
+- حلول عملية مع فوائد ملموسة
+- دعوة للتواصل واضحة ومحترمة
+- نبرة مهنية وودية بدون مبالغة`;
+        } else if (language === 'indonesian') {
             return `Anda adalah spesialis marketing B2B Indonesia yang ahli di sektor ${industry}.
 
 KEAHLIAN INDUSTRI: Pemahaman mendalam tentang tantangan bisnis ${industry} di Indonesia
@@ -435,10 +542,58 @@ Generate both EMAIL and WHATSAPP templates with:
     }
 
     buildIndustryPrompt(lead, template, yourService, campaignStyle, language = 'indonesian') {
-        const marketData = this.marketData[language === 'indonesian' ? 'indonesia' : 'global'];
-        const context = language === 'indonesian' ? this.indonesianContext : this.englishContext;
+        const langKey = this.getLanguageKey(language);
         
-        if (language === 'indonesian') {
+        const contextMap = {
+            gulf: this.gulfContext,
+            indonesian: this.indonesianContext,
+            english: this.englishContext
+        };
+        
+        const dataMap = {
+            gulf: this.marketData.gulf,
+            indonesian: this.marketData.indonesia,
+            english: this.marketData.global
+        };
+        
+        const context = contextMap[langKey];
+        const marketData = dataMap[langKey];
+        
+        if (this.isGulfLanguage(language)) {
+            return `أنشئ محتوى تسويقي مخصص لهذا النشاط التجاري:
+
+معلومات النشاط:
+- الاسم: ${lead.name}
+- العنوان: ${lead.address}
+- الهاتف: ${lead.phone}
+- التقييم: ${lead.rating || 'غير متوفر'}
+- الموقع الإلكتروني: ${lead.website || 'لا يوجد موقع حالياً'}
+
+خدمتك: ${yourService}
+
+سياق الصناعة:
+التحديات: ${template.painPoints.join('، ')}
+الحلول: ${template.solutions.join('، ')}
+الفوائد: ${template.benefits.join('، ')}
+
+ثقافة الأعمال الخليجية:
+- الثقة والسمعة أساس العلاقات التجارية
+- التواصل المحترم والمباشر مُقدّر
+- النتائج المثبتة أهم من الوعود
+- الوقت ثمين، كن مختصراً ومفيداً
+
+أسلوب الحملة: ${campaignStyle}
+
+المطلوب:
+1. قالب إيميل مع عنوان واضح ومحتوى مقنع
+2. قالب واتساب قصير ومهني
+
+ملاحظات مهمة:
+- كن صادقاً ومباشراً
+- تجنب المبالغة والكلام التسويقي المزعج
+- ركز على كيف يمكنك مساعدتهم فعلاً
+- اجعل الدعوة للتواصل سهلة ومحترمة`;
+        } else if (language === 'indonesian') {
             return `Buat konten marketing yang dipersonalisasi untuk bisnis ${template.localContext} ini:
 
 DETAIL BISNIS:
@@ -581,18 +736,43 @@ Make it specific to their business, include relevant market data, and create urg
         }
 
         const template = this.industryTemplates[industry];
-        const marketData = this.marketData[language === 'indonesian' ? 'indonesia' : 'global'];
+        const langKey = this.getLanguageKey(language);
         
-        const prompt = language === 'indonesian' ?
-            `Buat email follow-up untuk ${lead.name} di industri ${industry}.
+        const dataMap = {
+            gulf: this.marketData.gulf,
+            indonesian: this.marketData.indonesia,
+            english: this.marketData.global
+        };
+        
+        const marketData = dataMap[langKey];
+        let prompt;
+        
+        if (this.isGulfLanguage(language)) {
+            prompt = `أنشئ إيميل متابعة لـ ${lead.name} في قطاع ${industry}.
+            هذه هي نقطة الاتصال الثانية - افترض أنهم شاهدوا الإيميل الأول.
+            ركز على دراسات الحالة، الإثبات الاجتماعي، والفوائد المحددة مع البيانات.
+            الخدمة: ${yourService}
+            الأسلوب: ${style}
+            أضف أمثلة من السوق الخليجي وقصص نجاح مع إحصائيات حقيقية.
+            بيانات السوق: ${marketData.marketSize[industry]}
+            استخدم الفرصة بناءً على الاتجاهات: ${marketData.trends.current}
+            
+            تذكر:
+            - كن محترماً ومهنياً
+            - استخدم بيانات حقيقية
+            - تجنب المبالغة
+            - ركز على القيمة الفعلية`;
+        } else if (language === 'indonesian') {
+            prompt = `Buat email follow-up untuk ${lead.name} di industri ${industry}.
             Ini adalah touch point KEDUA - asumsikan mereka sudah melihat email pertama.
             Fokus pada case studies, social proof, dan manfaat spesifik dengan data.
             Layanan: ${yourService}
             Gaya: ${style}
             Sertakan contoh pasar Indonesia dan success stories dengan statistik real.
             Data pasar: ${marketData.marketSize[industry]}
-            Gunakan urgency berdasarkan tren: ${marketData.trends.current}` :
-            `Create a follow-up email for ${lead.name} in ${industry} industry.
+            Gunakan urgency berdasarkan tren: ${marketData.trends.current}`;
+        } else {
+            prompt = `Create a follow-up email for ${lead.name} in ${industry} industry.
             This is the SECOND touch point - assume they've seen your first email.
             Focus on case studies, social proof, and specific benefits with data.
             Service: ${yourService}
@@ -600,6 +780,7 @@ Make it specific to their business, include relevant market data, and create urg
             Include market examples and success stories with real statistics.
             Market data: ${marketData.marketTrends[industry]}
             Use urgency based on trends: ${marketData.digitalTransformation}`;
+        }
 
         try {
             const completion = await this.openai.chat.completions.create({
@@ -632,18 +813,43 @@ Make it specific to their business, include relevant market data, and create urg
         }
 
         const template = this.industryTemplates[industry];
-        const marketData = this.marketData[language === 'indonesian' ? 'indonesia' : 'global'];
+        const langKey = this.getLanguageKey(language);
         
-        const prompt = language === 'indonesian' ?
-            `Buat email closing untuk ${lead.name} di industri ${industry}.
+        const dataMap = {
+            gulf: this.marketData.gulf,
+            indonesian: this.marketData.indonesia,
+            english: this.marketData.global
+        };
+        
+        const marketData = dataMap[langKey];
+        let prompt;
+        
+        if (this.isGulfLanguage(language)) {
+            prompt = `أنشئ إيميل ختامي لـ ${lead.name} في قطاع ${industry}.
+            هذه هي نقطة الاتصال الأخيرة - وضح الخطوات التالية بشكل واضح.
+            أضف عرض محدود الوقت، وضمانات، ودعوة قوية للتواصل.
+            الخدمة: ${yourService}
+            الأسلوب: ${style}
+            اجعله مقنعاً لأصحاب القرار في الأعمال الخليجية مع بيانات محددة.
+            استخدم الإحصائيات: ${marketData.marketSize[industry]}
+            وضح تكلفة عدم التحرك الآن، لكن بطريقة محترمة.
+            
+            تذكر:
+            - كن محترماً ومباشراً
+            - لا تكن ضاغطاً أو مزعجاً
+            - ركز على الفرصة والقيمة
+            - اجعل التواصل سهلاً`;
+        } else if (language === 'indonesian') {
+            prompt = `Buat email closing untuk ${lead.name} di industri ${industry}.
             Ini adalah touch point TERAKHIR - ciptakan urgensi dan langkah selanjutnya yang jelas.
             Sertakan penawaran terbatas waktu, risk reversal, dan CTA yang kuat.
             Layanan: ${yourService}
             Gaya: ${style}
             Buat compelling untuk decision makers bisnis Indonesia dengan data konkret.
             Gunakan statistik: ${marketData.marketSize[industry]}
-            Tekankan kerugian jika tidak bertindak sekarang.` :
-            `Create a closing email for ${lead.name} in ${industry} industry.
+            Tekankan kerugian jika tidak bertindak sekarang.`;
+        } else {
+            prompt = `Create a closing email for ${lead.name} in ${industry} industry.
             This is the FINAL touch point - create urgency and clear next steps.
             Include limited-time offers, risk reversal, and strong CTA.
             Service: ${yourService}
@@ -651,6 +857,7 @@ Make it specific to their business, include relevant market data, and create urg
             Make it compelling for business decision makers with concrete data.
             Use statistics: ${marketData.marketTrends[industry]}
             Emphasize the cost of inaction.`;
+        }
 
         try {
             const completion = await this.openai.chat.completions.create({
@@ -693,6 +900,15 @@ Make it specific to their business, include relevant market data, and create urg
 
     getMarketSize(industry, language = 'indonesian') {
         const marketData = {
+            gulf: {
+                restaurant: "$8.5B سوق المطاعم الخليجي مع نمو 12% سنوياً",
+                automotive: "$12.5B قطاع النقل، خدمات التوصيل $3.2B",
+                retail: "$95B سوق التجزئة، اختراق التجارة الإلكترونية 28.6%",
+                professional: "$28.5B الخدمات المهنية، الرقمنة 45%",
+                healthcare: "$42B سوق الرعاية الصحية، الطب عن بعد ينمو 400%",
+                education: "$8.2B تقنية التعليم، اختراق التعلم الإلكتروني 78%",
+                realestate: "$620B سوق العقارات، اعتماد PropTech 34%"
+            },
             indonesian: {
                 restaurant: "$18.2B industri F&B Indonesia dengan pertumbuhan 12% annually",
                 automotive: "$52.8B sektor transportasi, ride-sharing $8.5B",
@@ -713,15 +929,22 @@ Make it specific to their business, include relevant market data, and create urg
             }
         };
 
-        const langData = marketData[language] || marketData.indonesian;
-        return langData[industry] || (language === 'indonesian' ?
-            "Peluang pasar Indonesia yang berkembang" :
-            "Growing market opportunity");
+        const langKey = this.getLanguageKey(language);
+        const langData = marketData[langKey];
+        
+        const defaultMessages = {
+            gulf: "فرصة سوقية خليجية متنامية",
+            indonesian: "Peluang pasar Indonesia yang berkembang",
+            english: "Growing market opportunity"
+        };
+        
+        return langData[industry] || defaultMessages[langKey];
     }
 
     // New method to get available languages
     getAvailableLanguages() {
         return [
+            { code: 'gulf', name: 'العربية الخليجية', flag: '🇸🇦' },
             { code: 'indonesian', name: 'Bahasa Indonesia', flag: '🇮🇩' },
             { code: 'english', name: 'English', flag: '🇺🇸' }
         ];
@@ -729,7 +952,25 @@ Make it specific to their business, include relevant market data, and create urg
 
     // New method to get campaign styles with descriptions
     getCampaignStyles(language = 'indonesian') {
-        if (language === 'indonesian') {
+        if (this.isGulfLanguage(language)) {
+            return [
+                {
+                    code: 'conservative',
+                    name: 'محافظ',
+                    description: 'محترم، مهني، نبني الثقة تدريجياً'
+                },
+                {
+                    code: 'balanced',
+                    name: 'متوازن',
+                    description: 'نهج عملي متوازن بين الاحترافية والود'
+                },
+                {
+                    code: 'aggressive',
+                    name: 'مباشر',
+                    description: 'واضح، يركز على الفرصة والإجراء الفوري'
+                }
+            ];
+        } else if (language === 'indonesian') {
             return [
                 {
                     code: 'conservative',
@@ -773,6 +1014,15 @@ Make it specific to their business, include relevant market data, and create urg
         const industries = Object.keys(this.industryTemplates);
         
         const descriptions = {
+            gulf: {
+                restaurant: 'المطاعم والأغذية',
+                automotive: 'السيارات والنقل',
+                retail: 'التجزئة والتجارة الإلكترونية',
+                professional: 'الخدمات المهنية',
+                healthcare: 'الرعاية الصحية والعيادات',
+                education: 'التعليم والتدريب',
+                realestate: 'العقارات'
+            },
             indonesian: {
                 restaurant: 'Restoran & F&B',
                 automotive: 'Otomotif & Transportasi',
@@ -793,7 +1043,8 @@ Make it specific to their business, include relevant market data, and create urg
             }
         };
 
-        const langDesc = descriptions[language] || descriptions.indonesian;
+        const langKey = this.getLanguageKey(language);
+        const langDesc = descriptions[langKey];
         
         return industries.map(industry => ({
             code: industry,
