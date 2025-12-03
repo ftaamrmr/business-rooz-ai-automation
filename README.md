@@ -121,7 +121,7 @@ Mau boost penjualan pakai sistem online ordering? 📱
 - **Lead quality scoring** with AI intelligence
 - **Dual template creation** (email + WhatsApp)
 - **CSV and JSON export**
-- **Indonesian market optimization**
+- **Multi-language support** (Indonesian, English, Gulf Arabic)
 - **Rate limiting** to avoid blocking
 
 ### 🌐 Web Dashboard Features
@@ -213,6 +213,10 @@ DELAY_BETWEEN_SCRAPES=2000    # Milliseconds between requests
 MAX_RETRIES=3                 # Retry failed requests
 OUTPUT_FORMAT=csv             # Default output format
 
+# Marketing AI Configuration (optional)
+MARKETING_LANGUAGE=indonesian # Language for AI content generation
+                              # Options: indonesian, english, gulf_arabic
+
 # Database (optional)
 DB_PATH=./data/leads.db       # SQLite database path
 ```
@@ -226,10 +230,12 @@ DB_PATH=./data/leads.db       # SQLite database path
 - **Open source** - modify as needed
 - **No monthly subscriptions**
 
-### 🎯 Indonesian Market Focus
-- **Local business understanding** in AI prompts
-- **WhatsApp marketing** integration (popular in Indonesia)
-- **Indonesian language** optimization
+### 🌍 Multi-Market Support
+- **Multiple languages** support (Indonesian, English, Gulf Arabic)
+- **Local business understanding** in AI prompts for each market
+- **WhatsApp marketing** integration (popular globally)
+- **Market-specific** optimization and cultural awareness
+- **Gulf Arabic (خليجي)** for UAE, Saudi Arabia, Kuwait, Qatar, Bahrain, Oman markets
 
 ### 🛠️ Developer Friendly
 - **Full source code access**
