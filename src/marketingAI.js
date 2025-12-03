@@ -730,23 +730,35 @@ Make it specific to their business, include relevant market data, and create urg
             marketData = this.marketData.global;
         }
         
-        const prompt = language === 'indonesian' ?
-            `Buat email follow-up untuk ${lead.name} di industri ${industry}.
+        let prompt;
+        if (language === 'indonesian') {
+            prompt = `Buat email follow-up untuk ${lead.name} di industri ${industry}.
             Ini adalah touch point KEDUA - asumsikan mereka sudah melihat email pertama.
             Fokus pada case studies, social proof, dan manfaat spesifik dengan data.
             Layanan: ${yourService}
             Gaya: ${style}
             Sertakan contoh pasar Indonesia dan success stories dengan statistik real.
             Data pasar: ${marketData.marketSize[industry]}
-            Gunakan urgency berdasarkan tren: ${marketData.trends.current}` :
-            `Create a follow-up email for ${lead.name} in ${industry} industry.
+            Gunakan urgency berdasarkan tren: ${marketData.trends.current}`;
+        } else if (language === 'gulf_arabic') {
+            prompt = `أنشئ بريد إلكتروني متابعة لـ ${lead.name} في قطاع ${industry}.
+            هذه نقطة الاتصال الثانية - افترض أنهم شاهدوا البريد الأول.
+            ركز على دراسات الحالة، الدليل الاجتماعي، والفوائد المحددة مع البيانات.
+            الخدمة: ${yourService}
+            الأسلوب: ${style}
+            أضف أمثلة من السوق الخليجي وقصص نجاح مع إحصائيات حقيقية.
+            بيانات السوق: ${marketData.marketSize[industry]}
+            استخدم الإلحاح بناءً على الاتجاهات: ${marketData.trends.current}`;
+        } else {
+            prompt = `Create a follow-up email for ${lead.name} in ${industry} industry.
             This is the SECOND touch point - assume they've seen your first email.
             Focus on case studies, social proof, and specific benefits with data.
             Service: ${yourService}
             Style: ${style}
             Include market examples and success stories with real statistics.
-            Market data: ${marketData.marketTrends[industry]}
-            Use urgency based on trends: ${marketData.digitalTransformation}`;
+            Market data: ${marketData.marketSize ? marketData.marketSize[industry] : marketData.marketTrends[industry]}
+            Use urgency based on trends: ${marketData.digitalTransformation || marketData.trends.current}`;
+        }
 
         try {
             const completion = await this.openai.chat.completions.create({
@@ -788,23 +800,35 @@ Make it specific to their business, include relevant market data, and create urg
             marketData = this.marketData.global;
         }
         
-        const prompt = language === 'indonesian' ?
-            `Buat email closing untuk ${lead.name} di industri ${industry}.
+        let prompt;
+        if (language === 'indonesian') {
+            prompt = `Buat email closing untuk ${lead.name} di industri ${industry}.
             Ini adalah touch point TERAKHIR - ciptakan urgensi dan langkah selanjutnya yang jelas.
             Sertakan penawaran terbatas waktu, risk reversal, dan CTA yang kuat.
             Layanan: ${yourService}
             Gaya: ${style}
             Buat compelling untuk decision makers bisnis Indonesia dengan data konkret.
             Gunakan statistik: ${marketData.marketSize[industry]}
-            Tekankan kerugian jika tidak bertindak sekarang.` :
-            `Create a closing email for ${lead.name} in ${industry} industry.
+            Tekankan kerugian jika tidak bertindak sekarang.`;
+        } else if (language === 'gulf_arabic') {
+            prompt = `أنشئ بريد إلكتروني ختامي لـ ${lead.name} في قطاع ${industry}.
+            هذه نقطة الاتصال النهائية - اخلق إلحاحاً وخطوات واضحة تالية.
+            أضف عروض محدودة الوقت، تقليل المخاطر، ودعوة قوية للعمل.
+            الخدمة: ${yourService}
+            الأسلوب: ${style}
+            اجعله مقنعاً لصناع القرار في الأعمال الخليجية مع بيانات ملموسة.
+            استخدم الإحصائيات: ${marketData.marketSize[industry]}
+            أكد على تكلفة عدم اتخاذ إجراء الآن.`;
+        } else {
+            prompt = `Create a closing email for ${lead.name} in ${industry} industry.
             This is the FINAL touch point - create urgency and clear next steps.
             Include limited-time offers, risk reversal, and strong CTA.
             Service: ${yourService}
             Style: ${style}
             Make it compelling for business decision makers with concrete data.
-            Use statistics: ${marketData.marketTrends[industry]}
+            Use statistics: ${marketData.marketSize ? marketData.marketSize[industry] : marketData.marketTrends[industry]}
             Emphasize the cost of inaction.`;
+        }
 
         try {
             const completion = await this.openai.chat.completions.create({
