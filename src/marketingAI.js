@@ -7,6 +7,7 @@ class MarketingAI {
         this.industryTemplates = this.loadIndustryTemplates();
         this.indonesianContext = this.loadIndonesianContext();
         this.englishContext = this.loadEnglishContext();
+        this.gulfArabicContext = this.loadGulfArabicContext();
         this.marketData = this.loadRealMarketData();
     }
 
@@ -238,6 +239,26 @@ class MarketingAI {
                     challenges: "Digital literacy gaps, infrastructure variations, regulatory compliance"
                 }
             },
+            gulf: {
+                digitalAdoption: "98% من سكان الخليج يستخدمون الهواتف الذكية، 85% يتسوقون عبر الإنترنت",
+                ecommerceGrowth: "نمو 25% سنوياً، بقيمة 35 مليار دولار في 2024",
+                paymentMethods: "مدى (78%)، آبل باي (45%)، بطاقات ائتمان (92%)",
+                socialMedia: "إنستغرام 42 مليون مستخدم، تويتر 18 مليون، واتساب 98% انتشار",
+                marketSize: {
+                    restaurant: "سوق المطاعم 28 مليار دولار، نمو 15% سنوياً",
+                    automotive: "سوق السيارات 85 مليار دولار، التأجير 12 مليار",
+                    retail: "سوق التجزئة 156 مليار دولار، التجارة الإلكترونية 42%",
+                    healthcare: "القطاع الصحي 68 مليار دولار، الصحة الرقمية نمو 350%",
+                    education: "قطاع التعليم 45 مليار دولار، التعليم عن بعد 65%",
+                    realestate: "سوق العقار 890 مليار دولار، التقنية العقارية 28%",
+                    professional: "الخدمات المهنية 78 مليار دولار، التحول الرقمي 67%"
+                },
+                trends: {
+                    current: "تبني الذكاء الاصطناعي 189%، رؤية 2030، التوطين 45%",
+                    emerging: "التجارة الصوتية، المدن الذكية، الاقتصاد الرقمي",
+                    challenges: "التوطين، المنافسة العالمية، التحول الرقمي السريع"
+                }
+            },
             global: {
                 digitalTransformation: "70% of companies accelerated digital initiatives post-2020",
                 aiAdoption: "35% of businesses use AI for customer engagement",
@@ -306,6 +327,31 @@ class MarketingAI {
         };
     }
 
+    loadGulfArabicContext() {
+        return {
+            businessCulture: {
+                relationship: "العلاقات الشخصية والثقة أساس نجاح الأعمال في الخليج",
+                communication: "التواصل المباشر مع احترام التقاليد والقيم الثقافية",
+                decision: "القرارات تتخذ بعد استشارة العائلة والشركاء الموثوقين",
+                trust: "بناء الثقة والسمعة الطيبة مفتاح النجاح التجاري",
+                social: "التوصيات الشخصية والشهادات لها تأثير كبير"
+            },
+            marketTrends: {
+                digital: "98% من سكان الخليج يستخدمون الهواتف الذكية",
+                ecommerce: "التجارة الإلكترونية تنمو بنسبة 25% سنوياً",
+                social: "تويتر وإنستغرام وواتساب المنصات الأكثر استخداماً",
+                payment: "مدى، آبل باي، وطرق الدفع الرقمية منتشرة بكثرة",
+                delivery: "التوصيل في نفس اليوم أصبح توقعاً أساسياً"
+            },
+            challenges: {
+                competition: "المنافسة الشديدة بين الشركات المحلية والعالمية",
+                innovation: "الحاجة المستمرة للابتكار ومواكبة التطور التقني",
+                regulation: "الالتزام بالأنظمة واللوائح الحكومية",
+                talent: "استقطاب وتطوير الكفاءات الوطنية"
+            }
+        };
+    }
+
     async generateIndustrySpecificContent(lead, industry, yourService, campaignStyle = 'balanced', language = 'indonesian') {
         if (!this.openai) {
             throw new Error('OpenAI not configured');
@@ -346,20 +392,32 @@ class MarketingAI {
         const styleInstructions = {
             conservative: {
                 indonesian: "Sopan, profesional, dan membangun kepercayaan secara bertahap. Fokus pada hubungan jangka panjang.",
-                english: "Respectful, professional, and build trust gradually. Focus on long-term relationship building."
+                english: "Respectful, professional, and build trust gradually. Focus on long-term relationship building.",
+                gulf_arabic: "محترم، مهني، وبناء الثقة تدريجياً. التركيز على العلاقات طويلة الأمد."
             },
             balanced: {
                 indonesian: "Pendekatan bisnis standar dengan keseimbangan profesionalisme dan keramahan.",
-                english: "Standard business approach with balanced professionalism and approachability."
+                english: "Standard business approach with balanced professionalism and approachability.",
+                gulf_arabic: "نهج أعمال متوازن بين الاحترافية والود."
             },
             aggressive: {
                 indonesian: "Langsung, ciptakan urgensi, dan fokus pada tindakan segera. Tekankan keunggulan kompetitif.",
-                english: "Direct, create urgency, and focus on immediate action. Emphasize competitive advantages."
+                english: "Direct, create urgency, and focus on immediate action. Emphasize competitive advantages.",
+                gulf_arabic: "مباشر، خلق حالة من الإلحاح، والتركيز على العمل الفوري. التأكيد على المزايا التنافسية."
             }
         };
 
-        const marketContext = language === 'indonesian' ? this.indonesianContext : this.englishContext;
-        const marketData = this.marketData[language === 'indonesian' ? 'indonesia' : 'global'];
+        let marketContext, marketData;
+        if (language === 'gulf_arabic') {
+            marketContext = this.gulfArabicContext;
+            marketData = this.marketData.gulf;
+        } else if (language === 'indonesian') {
+            marketContext = this.indonesianContext;
+            marketData = this.marketData.indonesia;
+        } else {
+            marketContext = this.englishContext;
+            marketData = this.marketData.global;
+        }
 
         if (language === 'indonesian') {
             return `Anda adalah spesialis marketing B2B Indonesia yang ahli di sektor ${industry}.
@@ -396,6 +454,41 @@ Generate template EMAIL dan WHATSAPP dengan:
 - Call-to-action yang jelas dan mendesak
 - Tone profesional namun approachable
 - Social proof dan case study reference`;
+        } else if (language === 'gulf_arabic') {
+            return `أنت متخصص تسويق B2B خبير في قطاع ${industry} في منطقة الخليج.
+
+الخبرة الصناعية: فهم عميق لتحديات الأعمال في قطاع ${industry} في دول الخليج
+الوعي الثقافي: أسلوب التواصل التجاري الخليجي والقيم الثقافية
+السوق المحلي: الاتجاهات الحالية والتحديات والفرص في سوق ${industry} الخليجي
+
+أسلوب التواصل: ${styleInstructions[campaignStyle].gulf_arabic}
+
+بيانات السوق الحقيقية:
+- التحول الرقمي: ${marketData.digitalAdoption}
+- نمو التجارة الإلكترونية: ${marketData.ecommerceGrowth}
+- طرق الدفع: ${marketData.paymentMethods}
+- وسائل التواصل: ${marketData.socialMedia}
+- حجم سوق ${industry}: ${marketData.marketSize[industry]}
+
+المتطلبات:
+1. اكتب باللغة العربية الفصحى مع المصطلحات التقنية بالإنجليزية إذا لزم الأمر
+2. استخدم أسلوب التواصل التجاري الخليجي (محترم، يركز على العلاقات)
+3. قدم نقاط الألم الخاصة بالصناعة والحلول
+4. اربط السياق المحلي واتجاهات السوق ببيانات حقيقية
+5. اصنع عرض قيمة مقنع بإحصائيات
+6. أضف دليل اجتماعي ومؤشرات مصداقية
+7. استخدم بيانات السوق الحالية لخلق حالة إلحاح
+8. ركز على العائد على الاستثمار والنتائج القابلة للقياس
+
+تنسيق المخرجات:
+أنشئ قالب البريد الإلكتروني وواتساب مع:
+- عنوان موضوع جذاب مع إحصائيات
+- نقاط الألم الخاصة بالصناعة مع البيانات
+- حلول مخصصة مع فوائد قابلة للقياس
+- سياق السوق المحلي مع الاتجاهات الحالية
+- دعوة واضحة وعاجلة للعمل
+- نبرة مهنية ومقبولة
+- دليل اجتماعي ومرجع دراسة حالة`;
         } else {
             return `You are an expert B2B marketing specialist focused on the ${industry} sector.
 
@@ -435,8 +528,17 @@ Generate both EMAIL and WHATSAPP templates with:
     }
 
     buildIndustryPrompt(lead, template, yourService, campaignStyle, language = 'indonesian') {
-        const marketData = this.marketData[language === 'indonesian' ? 'indonesia' : 'global'];
-        const context = language === 'indonesian' ? this.indonesianContext : this.englishContext;
+        let marketData, context;
+        if (language === 'gulf_arabic') {
+            marketData = this.marketData.gulf;
+            context = this.gulfArabicContext;
+        } else if (language === 'indonesian') {
+            marketData = this.marketData.indonesia;
+            context = this.indonesianContext;
+        } else {
+            marketData = this.marketData.global;
+            context = this.englishContext;
+        }
         
         if (language === 'indonesian') {
             return `Buat konten marketing yang dipersonalisasi untuk bisnis ${template.localContext} ini:
@@ -476,6 +578,44 @@ Harap generate:
 2. TEMPLATE WHATSAPP untuk follow-up yang casual
 
 Buat spesifik untuk bisnis mereka, sertakan konteks Indonesia dengan data real, dan ciptakan urgensi berdasarkan tren pasar terkini. Gunakan statistik dan data untuk meningkatkan kredibilitas.`;
+        } else if (language === 'gulf_arabic') {
+            return `أنشئ محتوى تسويقي مخصص لهذا النشاط التجاري ${template.localContext}:
+
+تفاصيل النشاط التجاري:
+- الاسم: ${lead.name}
+- العنوان: ${lead.address}
+- الهاتف: ${lead.phone}
+- التقييم: ${lead.rating || 'غير متوفر'}
+- الموقع الإلكتروني: ${lead.website || 'لا يوجد موقع'}
+
+خدمتك: ${yourService}
+
+سياق الصناعة:
+نقاط الألم: ${template.painPoints.join('، ')}
+الحلول: ${template.solutions.join('، ')}
+الفوائد: ${template.benefits.join('، ')}
+السياق المحلي: ${template.localContext}
+إلحاح السوق: ${template.urgency}
+
+بيانات السوق الحقيقية:
+- حجم السوق: ${marketData.marketSize[template.industry] || marketData.marketSize.professional}
+- الاتجاهات الحالية: ${marketData.trends.current}
+- التحديات: ${marketData.trends.challenges}
+
+ثقافة الأعمال الخليجية:
+- التواصل يركز على بناء العلاقات
+- الثقة والمصداقية مهمة جداً
+- الدليل الاجتماعي له تأثير كبير
+- واتساب هو وسيلة التواصل التجاري الرئيسية
+- فهم السوق المحلي ضروري للنجاح
+
+أسلوب الحملة: ${campaignStyle}
+
+الرجاء إنشاء:
+1. قالب البريد الإلكتروني مع عنوان جذاب وإحصائيات
+2. قالب واتساب للمتابعة بأسلوب ودي
+
+اجعله محدداً لنشاطهم التجاري، أضف السياق الخليجي مع البيانات الحقيقية، واخلق حالة إلحاح بناءً على اتجاهات السوق الحالية. استخدم الإحصائيات والبيانات لزيادة المصداقية.`;
         } else {
             return `Create personalized marketing content for this ${template.localContext} business:
 
@@ -581,25 +721,44 @@ Make it specific to their business, include relevant market data, and create urg
         }
 
         const template = this.industryTemplates[industry];
-        const marketData = this.marketData[language === 'indonesian' ? 'indonesia' : 'global'];
+        let marketData;
+        if (language === 'gulf_arabic') {
+            marketData = this.marketData.gulf;
+        } else if (language === 'indonesian') {
+            marketData = this.marketData.indonesia;
+        } else {
+            marketData = this.marketData.global;
+        }
         
-        const prompt = language === 'indonesian' ?
-            `Buat email follow-up untuk ${lead.name} di industri ${industry}.
+        let prompt;
+        if (language === 'indonesian') {
+            prompt = `Buat email follow-up untuk ${lead.name} di industri ${industry}.
             Ini adalah touch point KEDUA - asumsikan mereka sudah melihat email pertama.
             Fokus pada case studies, social proof, dan manfaat spesifik dengan data.
             Layanan: ${yourService}
             Gaya: ${style}
             Sertakan contoh pasar Indonesia dan success stories dengan statistik real.
             Data pasar: ${marketData.marketSize[industry]}
-            Gunakan urgency berdasarkan tren: ${marketData.trends.current}` :
-            `Create a follow-up email for ${lead.name} in ${industry} industry.
+            Gunakan urgency berdasarkan tren: ${marketData.trends.current}`;
+        } else if (language === 'gulf_arabic') {
+            prompt = `أنشئ بريد إلكتروني متابعة لـ ${lead.name} في قطاع ${industry}.
+            هذه نقطة الاتصال الثانية - افترض أنهم شاهدوا البريد الأول.
+            ركز على دراسات الحالة، الدليل الاجتماعي، والفوائد المحددة مع البيانات.
+            الخدمة: ${yourService}
+            الأسلوب: ${style}
+            أضف أمثلة من السوق الخليجي وقصص نجاح مع إحصائيات حقيقية.
+            بيانات السوق: ${marketData.marketSize[industry]}
+            استخدم الإلحاح بناءً على الاتجاهات: ${marketData.trends.current}`;
+        } else {
+            prompt = `Create a follow-up email for ${lead.name} in ${industry} industry.
             This is the SECOND touch point - assume they've seen your first email.
             Focus on case studies, social proof, and specific benefits with data.
             Service: ${yourService}
             Style: ${style}
             Include market examples and success stories with real statistics.
-            Market data: ${marketData.marketTrends[industry]}
-            Use urgency based on trends: ${marketData.digitalTransformation}`;
+            Market data: ${marketData.marketSize ? marketData.marketSize[industry] : marketData.marketTrends[industry]}
+            Use urgency based on trends: ${marketData.digitalTransformation || marketData.trends.current}`;
+        }
 
         try {
             const completion = await this.openai.chat.completions.create({
@@ -632,25 +791,44 @@ Make it specific to their business, include relevant market data, and create urg
         }
 
         const template = this.industryTemplates[industry];
-        const marketData = this.marketData[language === 'indonesian' ? 'indonesia' : 'global'];
+        let marketData;
+        if (language === 'gulf_arabic') {
+            marketData = this.marketData.gulf;
+        } else if (language === 'indonesian') {
+            marketData = this.marketData.indonesia;
+        } else {
+            marketData = this.marketData.global;
+        }
         
-        const prompt = language === 'indonesian' ?
-            `Buat email closing untuk ${lead.name} di industri ${industry}.
+        let prompt;
+        if (language === 'indonesian') {
+            prompt = `Buat email closing untuk ${lead.name} di industri ${industry}.
             Ini adalah touch point TERAKHIR - ciptakan urgensi dan langkah selanjutnya yang jelas.
             Sertakan penawaran terbatas waktu, risk reversal, dan CTA yang kuat.
             Layanan: ${yourService}
             Gaya: ${style}
             Buat compelling untuk decision makers bisnis Indonesia dengan data konkret.
             Gunakan statistik: ${marketData.marketSize[industry]}
-            Tekankan kerugian jika tidak bertindak sekarang.` :
-            `Create a closing email for ${lead.name} in ${industry} industry.
+            Tekankan kerugian jika tidak bertindak sekarang.`;
+        } else if (language === 'gulf_arabic') {
+            prompt = `أنشئ بريد إلكتروني ختامي لـ ${lead.name} في قطاع ${industry}.
+            هذه نقطة الاتصال النهائية - اخلق إلحاحاً وخطوات واضحة تالية.
+            أضف عروض محدودة الوقت، تقليل المخاطر، ودعوة قوية للعمل.
+            الخدمة: ${yourService}
+            الأسلوب: ${style}
+            اجعله مقنعاً لصناع القرار في الأعمال الخليجية مع بيانات ملموسة.
+            استخدم الإحصائيات: ${marketData.marketSize[industry]}
+            أكد على تكلفة عدم اتخاذ إجراء الآن.`;
+        } else {
+            prompt = `Create a closing email for ${lead.name} in ${industry} industry.
             This is the FINAL touch point - create urgency and clear next steps.
             Include limited-time offers, risk reversal, and strong CTA.
             Service: ${yourService}
             Style: ${style}
             Make it compelling for business decision makers with concrete data.
-            Use statistics: ${marketData.marketTrends[industry]}
+            Use statistics: ${marketData.marketSize ? marketData.marketSize[industry] : marketData.marketTrends[industry]}
             Emphasize the cost of inaction.`;
+        }
 
         try {
             const completion = await this.openai.chat.completions.create({
@@ -702,6 +880,15 @@ Make it specific to their business, include relevant market data, and create urg
                 education: "$12.4B EdTech, penetrasi online learning 78%",
                 realestate: "$420B pasar properti, PropTech adoption 34%"
             },
+            gulf_arabic: {
+                restaurant: "سوق المطاعم 28 مليار دولار، نمو 15% سنوياً",
+                automotive: "سوق السيارات 85 مليار دولار، التأجير 12 مليار",
+                retail: "سوق التجزئة 156 مليار دولار، التجارة الإلكترونية 42%",
+                professional: "الخدمات المهنية 78 مليار دولار، التحول الرقمي 67%",
+                healthcare: "القطاع الصحي 68 مليار دولار، الصحة الرقمية نمو 350%",
+                education: "قطاع التعليم 45 مليار دولار، التعليم عن بعد 65%",
+                realestate: "سوق العقار 890 مليار دولار، التقنية العقارية 28%"
+            },
             english: {
                 restaurant: "$4.2T global food service market, 8.7% digital ordering growth",
                 automotive: "$2.9T automotive market, 23% EV adoption rate",
@@ -714,7 +901,9 @@ Make it specific to their business, include relevant market data, and create urg
         };
 
         const langData = marketData[language] || marketData.indonesian;
-        return langData[industry] || (language === 'indonesian' ?
+        return langData[industry] || (language === 'gulf_arabic' ? 
+            "فرصة سوق متنامية" :
+            language === 'indonesian' ?
             "Peluang pasar Indonesia yang berkembang" :
             "Growing market opportunity");
     }
@@ -723,7 +912,8 @@ Make it specific to their business, include relevant market data, and create urg
     getAvailableLanguages() {
         return [
             { code: 'indonesian', name: 'Bahasa Indonesia', flag: '🇮🇩' },
-            { code: 'english', name: 'English', flag: '🇺🇸' }
+            { code: 'english', name: 'English', flag: '🇺🇸' },
+            { code: 'gulf_arabic', name: 'العربية الخليجية', flag: '🇦🇪' }
         ];
     }
 
@@ -745,6 +935,24 @@ Make it specific to their business, include relevant market data, and create urg
                     code: 'aggressive',
                     name: 'Agresif',
                     description: 'Langsung, menciptakan urgensi, fokus tindakan segera'
+                }
+            ];
+        } else if (language === 'gulf_arabic') {
+            return [
+                {
+                    code: 'conservative',
+                    name: 'محافظ',
+                    description: 'محترم، مهني، بناء الثقة تدريجياً'
+                },
+                {
+                    code: 'balanced',
+                    name: 'متوازن',
+                    description: 'نهج أعمال متوازن بين الاحترافية والود'
+                },
+                {
+                    code: 'aggressive',
+                    name: 'مباشر',
+                    description: 'مباشر، خلق إلحاح، التركيز على العمل الفوري'
                 }
             ];
         } else {

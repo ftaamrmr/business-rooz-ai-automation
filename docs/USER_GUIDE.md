@@ -62,17 +62,47 @@ Setiap lead bisa di-export sebagai file `.vcf` yang bisa langsung disimpan ke ko
 - Rating Google Maps
 - Catatan khusus
 
+## 🌍 Dukungan Multi-Bahasa
+
+Sistem ini mendukung pembuatan konten marketing dalam 3 bahasa:
+
+### Bahasa yang Didukung
+1. **Bahasa Indonesia** (indonesian) - Default
+   - Optimasi untuk pasar Indonesia
+   - Konteks budaya bisnis lokal
+   - Data pasar real Indonesia
+
+2. **English** (english)
+   - International market focus
+   - Global business context
+   - Professional tone
+
+3. **العربية الخليجية (Gulf Arabic)** (gulf_arabic)
+   - للسوق الخليجي (الإمارات، السعودية، الكويت، قطر، البحرين، عمان)
+   - فهم ثقافة الأعمال الخليجية
+   - بيانات السوق المحلية
+
+### Cara Mengaktifkan
+Edit file `.env` dan tambahkan:
+```env
+MARKETING_LANGUAGE=gulf_arabic
+```
+
+Opsi: `indonesian`, `english`, atau `gulf_arabic`
+
 ## 🔧 Tips Penggunaan
 
 ### Kampanye Efektif
 - Gunakan kata kunci spesifik
 - Mulai dengan 10-20 leads untuk testing
 - Fokus pada leads dengan skor >70
+- Pilih bahasa sesuai target market
 
 ### Manajemen Leads
 - Hubungi priority leads dalam 24 jam
 - Gunakan template AI yang sudah dibuat
 - Update status leads secara berkala
+- Sesuaikan bahasa konten dengan target
 
 ### Mobile Usage
 - Dashboard responsive untuk HP
