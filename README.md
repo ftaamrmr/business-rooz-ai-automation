@@ -4,9 +4,10 @@
 
 Generate business leads from Google Maps, create personalized marketing content using OpenAI, and manage everything through a modern web interface.
 
-[![GitHub stars](https://img.shields.io/github/stars/asiifdev/business-leads-ai-automation?style=social)](https://github.com/asiifdev/business-leads-ai-automation/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/asiifdev/business-leads-ai-automation?style=social)](https://github.com/asiifdev/business-leads-ai-automation/fork)
+[![GitHub stars](https://img.shields.io/github/stars/ftaamrmr/business-rooz-ai-automation?style=social)](https://github.com/ftaamrmr/business-rooz-ai-automation/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/ftaamrmr/business-rooz-ai-automation?style=social)](https://github.com/ftaamrmr/business-rooz-ai-automation/fork)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ftaamrmr/business-rooz-ai-automation)
 
 ---
 
@@ -27,19 +28,35 @@ This tool helps you:
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- Node.js 16+
+### Option 1: GitHub Codespaces (Recommended for Quick Testing)
+
+The fastest way to try this project! No local setup required.
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ftaamrmr/business-rooz-ai-automation)
+
+1. Click the "Open in GitHub Codespaces" badge above
+2. Wait for the environment to build (~2-3 minutes first time)
+3. Update `.env` file with your OpenAI API key
+4. Run `npm run web` to start the dashboard
+5. Access the web interface through the forwarded port 3000
+
+📚 **[Complete Codespaces Guide](docs/CODESPACES_GUIDE.md)** - Detailed instructions, tips, and troubleshooting
+
+### Option 2: Local Installation
+
+#### Prerequisites
+- Node.js 14+ (Node.js 20 recommended, used in Codespaces)
 - OpenAI API key ([get one here](https://platform.openai.com/))
 
-### Installation
+#### Installation
 
 ```bash
-git clone https://github.com/asiifdev/business-leads-ai-automation.git
-cd business-leads-ai-automation
+git clone https://github.com/ftaamrmr/business-rooz-ai-automation.git
+cd business-rooz-ai-automation
 npm install
 ```
 
-### Setup
+#### Setup
 
 ```bash
 # Copy environment template
@@ -164,8 +181,6 @@ Then open http://localhost:3000 in your browser. The web interface provides:
 - **Lead Management**: Filter, sort, and export leads
 - **Analytics**: Performance insights and reporting
 
-📚 **Full Web Dashboard Guide**: [docs/WEB_DASHBOARD_GUIDE.md](docs/WEB_DASHBOARD_GUIDE.md)
-
 ### 💻 Command Line Options
 
 ```bash
@@ -252,8 +267,8 @@ We welcome contributions! Here's how you can help:
 
 ```bash
 # Fork the repo, then clone your fork
-git clone https://github.com/YOUR_USERNAME/business-leads-ai-automation.git
-cd business-leads-ai-automation
+git clone https://github.com/YOUR_USERNAME/business-rooz-ai-automation.git
+cd business-rooz-ai-automation
 npm install
 
 # Create a feature branch
@@ -281,24 +296,13 @@ Please read our [DISCLAIMER.md](DISCLAIMER.md) for full legal information.
 ## 📞 Support & Documentation
 
 ### 📚 Documentation
-- **[Web Dashboard Guide](docs/WEB_DASHBOARD_GUIDE.md)**: Complete user guide for the web interface
-- **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)**: Production deployment instructions
-- **[API Documentation](docs/API.md)**: REST API reference (coming soon)
+- **[GitHub Codespaces Guide](docs/CODESPACES_GUIDE.md)**: Complete guide for cloud development
+- **[User Guide](docs/USER_GUIDE.md)**: Complete user guide for the application
 
 ### 🆘 Getting Help
 - **GitHub Issues**: For bug reports and feature requests
 - **Discussions**: For questions and community chat
 - **Email**: [your-email] for urgent matters
-
-### 🚀 Deployment
-Ready for production? Check our comprehensive deployment guide:
-- VPS/Server deployment
-- Docker containerization
-- Cloud platform deployment (Heroku, AWS, etc.)
-- SSL/HTTPS setup
-- Monitoring and maintenance
-
-📚 **Full Deployment Guide**: [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md)
 
 ---
 

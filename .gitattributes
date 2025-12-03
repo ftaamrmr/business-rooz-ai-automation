@@ -1,0 +1,8 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Shell scripts should always use LF line endings
+*.sh text eol=lf
+
+# Ensure setup script maintains Unix line endings for Codespaces
+.devcontainer/setup.sh text eol=lf
