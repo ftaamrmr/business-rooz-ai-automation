@@ -181,8 +181,6 @@ Then open http://localhost:3000 in your browser. The web interface provides:
 - **Lead Management**: Filter, sort, and export leads
 - **Analytics**: Performance insights and reporting
 
-📚 **Full Web Dashboard Guide**: [docs/WEB_DASHBOARD_GUIDE.md](docs/WEB_DASHBOARD_GUIDE.md)
-
 ### 💻 Command Line Options
 
 ```bash
@@ -269,8 +267,8 @@ We welcome contributions! Here's how you can help:
 
 ```bash
 # Fork the repo, then clone your fork
-git clone https://github.com/YOUR_USERNAME/business-leads-ai-automation.git
-cd business-leads-ai-automation
+git clone https://github.com/YOUR_USERNAME/business-rooz-ai-automation.git
+cd business-rooz-ai-automation
 npm install
 
 # Create a feature branch
@@ -299,24 +297,12 @@ Please read our [DISCLAIMER.md](DISCLAIMER.md) for full legal information.
 
 ### 📚 Documentation
 - **[GitHub Codespaces Guide](docs/CODESPACES_GUIDE.md)**: Complete guide for cloud development
-- **[Web Dashboard Guide](docs/WEB_DASHBOARD_GUIDE.md)**: Complete user guide for the web interface
-- **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)**: Production deployment instructions
-- **[API Documentation](docs/API.md)**: REST API reference (coming soon)
+- **[User Guide](docs/USER_GUIDE.md)**: Complete user guide for the application
 
 ### 🆘 Getting Help
 - **GitHub Issues**: For bug reports and feature requests
 - **Discussions**: For questions and community chat
 - **Email**: [your-email] for urgent matters
-
-### 🚀 Deployment
-Ready for production? Check our comprehensive deployment guide:
-- VPS/Server deployment
-- Docker containerization
-- Cloud platform deployment (Heroku, AWS, etc.)
-- SSL/HTTPS setup
-- Monitoring and maintenance
-
-📚 **Full Deployment Guide**: [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md)
 
 ---
 
