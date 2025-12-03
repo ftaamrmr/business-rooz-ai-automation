@@ -24,6 +24,7 @@ class MarketingAI {
     }
 
     // Helper method to check if language is Gulf Arabic
+    // Accepts both 'gulf' and 'arabic' for backward compatibility and flexibility
     isGulfLanguage(language) {
         return language === 'gulf' || language === 'arabic';
     }
