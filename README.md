@@ -45,7 +45,7 @@ The fastest way to try this project! No local setup required.
 ### Option 2: Local Installation
 
 #### Prerequisites
-- Node.js 16+ (Node.js 20 recommended, used in Codespaces)
+- Node.js 14+ (Node.js 20 recommended, used in Codespaces)
 - OpenAI API key ([get one here](https://platform.openai.com/))
 
 #### Installation

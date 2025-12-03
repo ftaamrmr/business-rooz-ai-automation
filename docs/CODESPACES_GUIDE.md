@@ -187,8 +187,8 @@ sudo apt-get update
 sudo apt-get install -y chromium chromium-sandbox
 
 # Check Chromium installation
-which chromium
-chromium --version
+which chromium || which chromium-browser
+chromium --version || chromium-browser --version
 ```
 
 #### npm Install Fails
@@ -241,8 +241,9 @@ nano .env
 
 #### Billing
 
-- Free tier: 60 hours/month for personal accounts
+- Free tier available for personal accounts (check current limits)
 - 2-core machine by default
+- For current pricing and free tier details: https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces
 - Check usage: https://github.com/settings/billing
 
 ### Best Practices
