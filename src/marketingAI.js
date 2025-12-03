@@ -1,4 +1,5 @@
 require('dotenv').config();
+const gulfPrompts = require('./gulf_prompts');
 
 class MarketingAI {
     constructor() {
@@ -6,6 +7,7 @@ class MarketingAI {
         this.initOpenAI();
         this.industryTemplates = this.loadIndustryTemplates();
         this.indonesianContext = this.loadIndonesianContext();
+        this.gulfContext = gulfPrompts.getGulfContext(); // Add Gulf context
         this.englishContext = this.loadEnglishContext();
         this.marketData = this.loadRealMarketData();
     }
@@ -218,6 +220,26 @@ class MarketingAI {
 
     loadRealMarketData() {
         return {
+            gulf: {
+                digitalAdoption: "95% of Gulf residents use smartphones, 89% shop online",
+                ecommerceGrowth: "40% YoY growth, reaching $45B in 2024",
+                paymentMethods: "Credit cards (65%), Digital wallets (45%), BNPL solutions growing",
+                socialMedia: "WhatsApp 100% penetration, Instagram 78%, Snapchat 65%",
+                marketSize: {
+                    restaurant: "$28B F&B market in GCC, 15% annual growth",
+                    automotive: "$85B transportation sector, car rental $12B",
+                    retail: "$320B retail market, e-commerce adoption 45%",
+                    healthcare: "$82B healthcare market, telemedicine growth 300%",
+                    education: "$45B education sector, EdTech penetration 65%",
+                    realestate: "$850B property market, PropTech adoption 28%",
+                    professional: "$78B professional services, digitalization 52%"
+                },
+                trends: {
+                    current: "AI adoption 180%, sustainability focus 92%, digital-first approach 87%",
+                    emerging: "Voice commerce, super apps, hyper-personalization, Fintech",
+                    challenges: "Rapid digital transformation, talent acquisition, regulatory compliance"
+                }
+            },
             indonesia: {
                 digitalAdoption: "88% of Indonesians use smartphones, 77% shop online",
                 ecommerceGrowth: "35% YoY growth, reaching $55B in 2024",
@@ -306,7 +328,7 @@ class MarketingAI {
         };
     }
 
-    async generateIndustrySpecificContent(lead, industry, yourService, campaignStyle = 'balanced', language = 'indonesian') {
+    async generateIndustrySpecificContent(lead, industry, yourService, campaignStyle = 'balanced', language = 'gulf') {
         if (!this.openai) {
             throw new Error('OpenAI not configured');
         }
@@ -342,24 +364,70 @@ class MarketingAI {
         }
     }
 
-    getSystemPrompt(industry, campaignStyle, language = 'indonesian') {
+    getSystemPrompt(industry, campaignStyle, language = 'gulf') {
         const styleInstructions = {
             conservative: {
+                gulf: "محترم، مهني، وبناء الثقة تدريجياً. التركيز على العلاقات طويلة الأمد.",
                 indonesian: "Sopan, profesional, dan membangun kepercayaan secara bertahap. Fokus pada hubungan jangka panjang.",
                 english: "Respectful, professional, and build trust gradually. Focus on long-term relationship building."
             },
             balanced: {
+                gulf: "أسلوب عمل متوازن بين الاحترافية والود.",
                 indonesian: "Pendekatan bisnis standar dengan keseimbangan profesionalisme dan keramahan.",
                 english: "Standard business approach with balanced professionalism and approachability."
             },
             aggressive: {
+                gulf: "مباشر، خلق حالة من الاستعجال، والتركيز على الإجراء الفوري. التأكيد على المزايا التنافسية.",
                 indonesian: "Langsung, ciptakan urgensi, dan fokus pada tindakan segera. Tekankan keunggulan kompetitif.",
                 english: "Direct, create urgency, and focus on immediate action. Emphasize competitive advantages."
             }
         };
 
-        const marketContext = language === 'indonesian' ? this.indonesianContext : this.englishContext;
-        const marketData = this.marketData[language === 'indonesian' ? 'indonesia' : 'global'];
+        // Select context based on language
+        const marketContext = language === 'gulf' || language === 'arabic' ? this.gulfContext : 
+                             language === 'indonesian' ? this.indonesianContext : this.englishContext;
+        const marketData = this.marketData[language === 'gulf' || language === 'arabic' ? 'gulf' : 
+                                           language === 'indonesian' ? 'indonesia' : 'global'];
+
+        // Gulf Arabic system prompt
+        if (language === 'gulf' || language === 'arabic') {
+            return gulfPrompts.systemPrompts.marketingExpert + `
+
+القطاع: ${industry}
+الأسلوب: ${styleInstructions[campaignStyle].gulf}
+
+السياق الخليجي:
+- ثقافة الأعمال: ${marketContext.businessCulture.relationship}
+- التواصل: ${marketContext.businessCulture.communication}
+- القرارات: ${marketContext.businessCulture.decision}
+- الثقة: ${marketContext.businessCulture.trust}
+
+الاتجاهات السوقية:
+- ${marketContext.marketTrends.digital}
+- ${marketContext.marketTrends.ecommerce}
+- ${marketContext.marketTrends.social}
+
+التحديات:
+- ${marketContext.challenges.competition}
+- ${marketContext.challenges.technology}
+
+المتطلبات:
+1. استخدم اللهجة الخليجية المناسبة للأعمال
+2. ركز على نقاط الألم الخاصة بالقطاع
+3. استشهد بالسياق والاتجاهات المحلية
+4. أنشئ عرض قيمة مقنع
+5. أضف دليل اجتماعي ومؤشرات مصداقية
+6. ركز على العائد على الاستثمار والنتائج القابلة للقياس
+
+صيغة الإخراج:
+أنشئ قوالب البريد الإلكتروني والواتساب مع:
+- عناوين جذابة
+- نقاط ألم خاصة بالقطاع
+- حلول مخصصة مع فوائد قابلة للقياس
+- سياق السوق المحلي
+- دعوة واضحة وعاجلة للإجراء
+- أسلوب احترافي لكن ودي`;
+        }
 
         if (language === 'indonesian') {
             return `Anda adalah spesialis marketing B2B Indonesia yang ahli di sektor ${industry}.
@@ -434,9 +502,45 @@ Generate both EMAIL and WHATSAPP templates with:
         }
     }
 
-    buildIndustryPrompt(lead, template, yourService, campaignStyle, language = 'indonesian') {
-        const marketData = this.marketData[language === 'indonesian' ? 'indonesia' : 'global'];
-        const context = language === 'indonesian' ? this.indonesianContext : this.englishContext;
+    buildIndustryPrompt(lead, template, yourService, campaignStyle, language = 'gulf') {
+        const marketData = this.marketData[language === 'gulf' || language === 'arabic' ? 'gulf' : 
+                                           language === 'indonesian' ? 'indonesia' : 'global'];
+        const context = language === 'gulf' || language === 'arabic' ? this.gulfContext :
+                       language === 'indonesian' ? this.indonesianContext : this.englishContext;
+        
+        // Gulf Arabic prompt
+        if (language === 'gulf' || language === 'arabic') {
+            return `أنشئ محتوى تسويقي مخصص لهذه الشركة:
+
+تفاصيل الشركة:
+- الاسم: ${lead.name}
+- العنوان: ${lead.address}
+- الهاتف: ${lead.phone}
+- التقييم: ${lead.rating || 'غير متوفر'}
+- الموقع الإلكتروني: ${lead.website || 'لا يوجد موقع'}
+
+خدمتك: ${yourService}
+
+السياق الخليجي للقطاع:
+نقاط الألم: ${template.painPoints ? template.painPoints.join('، ') : 'تحديات القطاع'}
+الحلول: ${template.solutions ? template.solutions.join('، ') : 'حلول رقمية متكاملة'}
+الفوائد: ${template.benefits ? template.benefits.join('، ') : 'تحسين الكفاءة والإيرادات'}
+
+ثقافة الأعمال الخليجية:
+- التواصل يركز على العلاقات
+- الثقة والمصداقية مهمة جداً
+- الدليل الاجتماعي مؤثر بشكل كبير
+- الواتساب هو وسيلة التواصل التجارية الرئيسية
+- فهم السوق المحلي أمر حاسم
+
+أسلوب الحملة: ${campaignStyle}
+
+يرجى إنشاء:
+1. قالب بريد إلكتروني مع عنوان جذاب
+2. قالب واتساب للمتابعة
+
+اجعله مخصصاً لشركتهم، وأضف سياق خليجي، وأنشئ حالة استعجال بناءً على اتجاهات السوق الحالية.`;
+        }
         
         if (language === 'indonesian') {
             return `Buat konten marketing yang dipersonalisasi untuk bisnis ${template.localContext} ini:
@@ -564,7 +668,7 @@ Make it specific to their business, include relevant market data, and create urg
             .trim();
     }
 
-    async generateMultiTouchSequence(lead, industry, yourService, language = 'indonesian') {
+    async generateMultiTouchSequence(lead, industry, yourService, language = 'gulf') {
         const sequences = {
             email1: await this.generateIndustrySpecificContent(lead, industry, yourService, 'conservative', language),
             email2: await this.generateFollowUpContent(lead, industry, yourService, 'balanced', language),
@@ -575,15 +679,24 @@ Make it specific to their business, include relevant market data, and create urg
         return sequences;
     }
 
-    async generateFollowUpContent(lead, industry, yourService, style, language = 'indonesian') {
+    async generateFollowUpContent(lead, industry, yourService, style, language = 'gulf') {
         if (!this.openai) {
             throw new Error('OpenAI not configured');
         }
 
         const template = this.industryTemplates[industry];
-        const marketData = this.marketData[language === 'indonesian' ? 'indonesia' : 'global'];
+        const marketData = this.marketData[language === 'gulf' || language === 'arabic' ? 'gulf' : 
+                                           language === 'indonesian' ? 'indonesia' : 'global'];
         
-        const prompt = language === 'indonesian' ?
+        const prompt = language === 'gulf' || language === 'arabic' ?
+            `أنشئ بريد إلكتروني متابعة لـ ${lead.name} في قطاع ${industry}.
+            هذه نقطة التواصل الثانية - افترض أنهم شاهدوا البريد الأول.
+            ركز على دراسات الحالة، الدليل الاجتماعي، والفوائد المحددة.
+            الخدمة: ${yourService}
+            الأسلوب: ${style}
+            أضف أمثلة من السوق الخليجي وقصص نجاح.
+            استخدم حالة الاستعجال بناءً على الاتجاهات الحالية.` :
+            language === 'indonesian' ?
             `Buat email follow-up untuk ${lead.name} di industri ${industry}.
             Ini adalah touch point KEDUA - asumsikan mereka sudah melihat email pertama.
             Fokus pada case studies, social proof, dan manfaat spesifik dengan data.
@@ -626,15 +739,24 @@ Make it specific to their business, include relevant market data, and create urg
         }
     }
 
-    async generateClosingContent(lead, industry, yourService, style, language = 'indonesian') {
+    async generateClosingContent(lead, industry, yourService, style, language = 'gulf') {
         if (!this.openai) {
             throw new Error('OpenAI not configured');
         }
 
         const template = this.industryTemplates[industry];
-        const marketData = this.marketData[language === 'indonesian' ? 'indonesia' : 'global'];
+        const marketData = this.marketData[language === 'gulf' || language === 'arabic' ? 'gulf' : 
+                                           language === 'indonesian' ? 'indonesia' : 'global'];
         
-        const prompt = language === 'indonesian' ?
+        const prompt = language === 'gulf' || language === 'arabic' ?
+            `أنشئ بريد إلكتروني ختامي لـ ${lead.name} في قطاع ${industry}.
+            هذه نقطة التواصل الأخيرة - أنشئ حالة استعجال وخطوات تالية واضحة.
+            أضف عروض محدودة الوقت، وضمانات، ودعوة قوية للإجراء.
+            الخدمة: ${yourService}
+            الأسلوب: ${style}
+            اجعله مقنعاً لصناع القرار في الشركات الخليجية.
+            أكد على تكلفة عدم اتخاذ إجراء الآن.` :
+            language === 'indonesian' ?
             `Buat email closing untuk ${lead.name} di industri ${industry}.
             Ini adalah touch point TERAKHIR - ciptakan urgensi dan langkah selanjutnya yang jelas.
             Sertakan penawaran terbatas waktu, risk reversal, dan CTA yang kuat.
@@ -691,8 +813,17 @@ Make it specific to their business, include relevant market data, and create urg
         };
     }
 
-    getMarketSize(industry, language = 'indonesian') {
+    getMarketSize(industry, language = 'gulf') {
         const marketData = {
+            gulf: {
+                restaurant: "$28B سوق المطاعم في دول الخليج بنمو سنوي 15٪",
+                automotive: "$85B قطاع النقل، تأجير السيارات $12B",
+                retail: "$320B سوق التجزئة، اعتماد التجارة الإلكترونية 45٪",
+                professional: "$78B الخدمات المهنية، الرقمنة 52٪",
+                healthcare: "$82B سوق الرعاية الصحية، نمو الطب عن بعد 300٪",
+                education: "$45B قطاع التعليم، اختراق التقنية التعليمية 65٪",
+                realestate: "$850B سوق العقارات، اعتماد التقنية العقارية 28٪"
+            },
             indonesian: {
                 restaurant: "$18.2B industri F&B Indonesia dengan pertumbuhan 12% annually",
                 automotive: "$52.8B sektor transportasi, ride-sharing $8.5B",
@@ -713,8 +844,10 @@ Make it specific to their business, include relevant market data, and create urg
             }
         };
 
-        const langData = marketData[language] || marketData.indonesian;
-        return langData[industry] || (language === 'indonesian' ?
+        const langData = marketData[language] || marketData.gulf;
+        return langData[industry] || (language === 'gulf' || language === 'arabic' ?
+            "فرصة سوقية متنامية" :
+            language === 'indonesian' ?
             "Peluang pasar Indonesia yang berkembang" :
             "Growing market opportunity");
     }
@@ -722,14 +855,33 @@ Make it specific to their business, include relevant market data, and create urg
     // New method to get available languages
     getAvailableLanguages() {
         return [
+            { code: 'gulf', name: 'Gulf Arabic (اللهجة الخليجية)', flag: '🇦🇪' },
             { code: 'indonesian', name: 'Bahasa Indonesia', flag: '🇮🇩' },
             { code: 'english', name: 'English', flag: '🇺🇸' }
         ];
     }
 
     // New method to get campaign styles with descriptions
-    getCampaignStyles(language = 'indonesian') {
-        if (language === 'indonesian') {
+    getCampaignStyles(language = 'gulf') {
+        if (language === 'gulf' || language === 'arabic') {
+            return [
+                {
+                    code: 'conservative',
+                    name: 'محافظ',
+                    description: 'محترم، مهني، بناء الثقة تدريجياً'
+                },
+                {
+                    code: 'balanced',
+                    name: 'متوازن',
+                    description: 'أسلوب عمل قياسي مع احترافية وود'
+                },
+                {
+                    code: 'aggressive',
+                    name: 'مباشر',
+                    description: 'مباشر، خلق استعجال، التركيز على الإجراء الفوري'
+                }
+            ];
+        } else if (language === 'indonesian') {
             return [
                 {
                     code: 'conservative',
@@ -769,10 +921,19 @@ Make it specific to their business, include relevant market data, and create urg
     }
 
     // Enhanced method to get industry list with descriptions
-    getAvailableIndustries(language = 'indonesian') {
+    getAvailableIndustries(language = 'gulf') {
         const industries = Object.keys(this.industryTemplates);
         
         const descriptions = {
+            gulf: {
+                restaurant: 'المطاعم والمقاهي',
+                automotive: 'السيارات والنقل',
+                retail: 'التجزئة والتجارة الإلكترونية',
+                professional: 'الخدمات المهنية',
+                healthcare: 'الرعاية الصحية والعيادات',
+                education: 'التعليم والتدريب',
+                realestate: 'العقارات'
+            },
             indonesian: {
                 restaurant: 'Restoran & F&B',
                 automotive: 'Otomotif & Transportasi',
