@@ -4,8 +4,8 @@
 
 Generate business leads from Google Maps, create personalized marketing content using OpenAI, and manage everything through a modern web interface.
 
-[![GitHub stars](https://img.shields.io/github/stars/asiifdev/business-leads-ai-automation?style=social)](https://github.com/asiifdev/business-leads-ai-automation/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/asiifdev/business-leads-ai-automation?style=social)](https://github.com/asiifdev/business-leads-ai-automation/fork)
+[![GitHub stars](https://img.shields.io/github/stars/ftaamrmr/business-rooz-ai-automation?style=social)](https://github.com/ftaamrmr/business-rooz-ai-automation/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/ftaamrmr/business-rooz-ai-automation?style=social)](https://github.com/ftaamrmr/business-rooz-ai-automation/fork)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ftaamrmr/business-rooz-ai-automation)
 
@@ -51,8 +51,8 @@ The fastest way to try this project! No local setup required.
 #### Installation
 
 ```bash
-git clone https://github.com/asiifdev/business-leads-ai-automation.git
-cd business-leads-ai-automation
+git clone https://github.com/ftaamrmr/business-rooz-ai-automation.git
+cd business-rooz-ai-automation
 npm install
 ```
 
