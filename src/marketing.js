@@ -1,5 +1,6 @@
 require('dotenv').config();
 const FileUtils = require('./fileUtils');
+const gulfPrompts = require('./gulf_prompts');
 
 class MarketingAutomation {
     constructor() {
@@ -37,21 +38,28 @@ class MarketingAutomation {
     }
 
     // Generate AI-powered marketing content
-    async generateAIMarketingContent(lead) {
+    async generateAIMarketingContent(lead, options = {}) {
         if (!this.openai) {
             console.log('⚠️ OpenAI not configured, skipping AI content generation');
             return null;
         }
 
+        const { language = 'gulf' } = options;
+
         try {
-            const prompt = this.buildMarketingPrompt(lead);
+            const prompt = this.buildMarketingPrompt(lead, language);
+            
+            // Use Gulf prompts for Arabic content
+            const systemPrompt = (language === 'gulf' || language === 'arabic') 
+                ? gulfPrompts.systemPrompts.marketingExpert
+                : "You are a professional marketing expert specializing in business outreach. Create personalized, engaging, and conversion-focused marketing content.";
             
             const completion = await this.openai.chat.completions.create({
                 model: process.env.OPENAI_MODEL || "gpt-4.1-nano",
                 messages: [
                     {
                         role: "system",
-                        content: "You are a professional marketing expert specializing in Indonesian business outreach. Create personalized, engaging, and conversion-focused marketing content."
+                        content: systemPrompt
                     },
                     {
                         role: "user",
@@ -71,7 +79,7 @@ class MarketingAutomation {
         }
     }
 
-    buildMarketingPrompt(lead) {
+    buildMarketingPrompt(lead, language = 'gulf') {
         const businessInfo = {
             name: process.env.BUSINESS_NAME || "Your Business",
             phone: process.env.BUSINESS_PHONE || "+6281234567890",
@@ -83,6 +91,52 @@ class MarketingAutomation {
 
         const businessType = process.env.BUSINESS_TYPE || "rental_mobil";
         
+        // Use Gulf prompts for Arabic content
+        if (language === 'gulf' || language === 'arabic') {
+            const industry = process.env.INDUSTRY || 'automotive';
+            const gulfContext = gulfPrompts.getGulfContext();
+            
+            return `
+أنشئ محتوى تسويقي مخصص لهذا العميل المحتمل:
+
+معلومات العميل المستهدف:
+- الاسم: ${lead.name}
+- العنوان: ${lead.address}
+- الهاتف: ${lead.phone || 'غير متوفر'}
+- التقييم: ${lead.rating || 'غير متوفر'}
+- الموقع الإلكتروني: ${lead.website ? 'يوجد موقع' : 'لا يوجد موقع'}
+
+معلومات شركتك:
+- اسم الشركة: ${businessInfo.name}
+- هاتف الشركة: ${businessInfo.phone}
+- البريد الإلكتروني: ${businessInfo.email}
+- اسم المالك: ${businessInfo.ownerName}
+- نوع العمل: ${businessType}
+- القطاع: ${industry}
+
+السياق الخليجي:
+- ${gulfContext.marketTrends.digital}
+- ${gulfContext.marketTrends.ecommerce}
+- ${gulfContext.businessCulture.relationship}
+
+المتطلبات:
+1. أنشئ عنوان البريد الإلكتروني (أقل من 60 حرف)
+2. أنشئ محتوى البريد الإلكتروني (احترافي، شخصي، يتضمن دعوة للإجراء)
+3. أنشئ محتوى الواتساب (ودي، استخدام الإيموجي، يتضمن دعوة للإجراء)
+4. استخدم اللهجة الخليجية
+5. اجعله شخصياً بذكر اسم الشركة والموقع
+6. ضع معلومات التواصل
+7. ركز على القيمة المقدمة والفوائد
+
+صيغة الإجابة:
+SUBJECT: [عنوان البريد الإلكتروني]
+EMAIL: [محتوى البريد الإلكتروني]
+WHATSAPP: [محتوى الواتساب]
+
+أنشئ المحتوى التسويقي:`;
+        }
+        
+        // Fallback to English
         return `
 Create personalized marketing content for this business lead:
 
@@ -106,7 +160,7 @@ REQUIREMENTS:
 1. Create an EMAIL SUBJECT LINE (max 60 characters)
 2. Create EMAIL CONTENT (professional, personalized, include call-to-action)
 3. Create WHATSAPP CONTENT (casual, friendly tone with emojis, include call-to-action)
-4. Use Indonesian language
+4. Use English language
 5. Make it personal by mentioning their business name and location
 6. Include your business contact information
 7. Focus on value proposition and benefits
@@ -190,21 +244,26 @@ Generate the marketing content:`;
         return marketingData;
     }
 
-    async generateBaseMarketingTemplate(marketingContent, callToAction = "") {
+    async generateBaseMarketingTemplate(marketingContent, callToAction = "", language = 'gulf') {
         if (!this.openai) {
             console.log('⚠️ OpenAI not configured, cannot generate base template');
             return null;
         }
 
         try {
-            const prompt = this.buildBaseTemplatePrompt(marketingContent, callToAction);
+            const prompt = this.buildBaseTemplatePrompt(marketingContent, callToAction, language);
+            
+            // Use Gulf prompts for Arabic content
+            const systemPrompt = (language === 'gulf' || language === 'arabic')
+                ? gulfPrompts.systemPrompts.emailExpert
+                : "You are a professional marketing expert specializing in business outreach. Create engaging and conversion-focused marketing templates.";
             
             const completion = await this.openai.chat.completions.create({
                 model: process.env.OPENAI_MODEL || "gpt-4.1-nano",
                 messages: [
                     {
                         role: "system",
-                        content: "You are a professional marketing expert specializing in Indonesian business outreach. Create engaging and conversion-focused marketing templates."
+                        content: systemPrompt
                     },
                     {
                         role: "user",
@@ -224,7 +283,7 @@ Generate the marketing content:`;
         }
     }
 
-    buildBaseTemplatePrompt(marketingContent, callToAction) {
+    buildBaseTemplatePrompt(marketingContent, callToAction, language = 'gulf') {
         const businessInfo = {
             name: process.env.BUSINESS_NAME || "Your Business",
             phone: process.env.BUSINESS_PHONE || "+6281234567890",
@@ -236,6 +295,42 @@ Generate the marketing content:`;
 
         const businessType = process.env.BUSINESS_TYPE || "rental_mobil";
         
+        // Use Gulf prompts for Arabic content
+        if (language === 'gulf' || language === 'arabic') {
+            return `
+أنشئ قالب تسويقي أساسي يمكن تخصيصه لشركات مختلفة:
+
+المحتوى التسويقي:
+${marketingContent}
+
+الدعوة للإجراء:
+${callToAction || "أنشئ دعوة مناسبة للإجراء"}
+
+معلومات شركتك:
+- اسم الشركة: ${businessInfo.name}
+- هاتف الشركة: ${businessInfo.phone}
+- البريد الإلكتروني: ${businessInfo.email}
+- اسم المالك: ${businessInfo.ownerName}
+- نوع العمل: ${businessType}
+
+المتطلبات:
+1. أنشئ قالب عنوان البريد الإلكتروني (أقل من 60 حرف، استخدم [BUSINESS_NAME] كمتغير)
+2. أنشئ قالب محتوى البريد الإلكتروني (احترافي، يتضمن [BUSINESS_NAME], [ADDRESS], [PHONE] كمتغيرات)
+3. أنشئ قالب محتوى الواتساب (ودي، استخدام الإيموجي، يتضمن [BUSINESS_NAME], [ADDRESS], [PHONE] كمتغيرات)
+4. استخدم اللهجة الخليجية
+5. ضمن المحتوى التسويقي والدعوة للإجراء بشكل طبيعي
+6. ضع معلومات التواصل
+7. اجعله شخصياً لكن قابل لإعادة الاستخدام
+
+صيغة الإجابة:
+SUBJECT: [قالب عنوان البريد]
+EMAIL: [قالب محتوى البريد]
+WHATSAPP: [قالب محتوى الواتساب]
+
+أنشئ القالب التسويقي الأساسي:`;
+        }
+        
+        // Fallback to English
         return `
 Create a base marketing template that will be personalized for different businesses:
 
@@ -258,7 +353,7 @@ REQUIREMENTS:
 1. Create an EMAIL SUBJECT LINE template (max 60 characters, use [BUSINESS_NAME] placeholder)
 2. Create EMAIL CONTENT template (professional, include [BUSINESS_NAME], [ADDRESS], [PHONE] placeholders)
 3. Create WHATSAPP CONTENT template (casual, friendly tone with emojis, include [BUSINESS_NAME], [ADDRESS], [PHONE] placeholders)
-4. Use Indonesian language
+4. Use English language
 5. Include the marketing content and call to action naturally
 6. Include your business contact information
 7. Make it personal but reusable for different businesses

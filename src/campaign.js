@@ -5,6 +5,7 @@ const MarketingAutomation = require('./marketing');
 const MarketingAI = require('./marketingAI');
 const LeadIntelligence = require('./leadIntelligence');
 const FileUtils = require('./fileUtils');
+const gulfPrompts = require('./gulf_prompts');
 
 class CampaignBuilder {
     constructor() {
@@ -148,6 +149,19 @@ class CampaignBuilder {
         console.log('─'.repeat(50));
         
         this.campaign.yourService = await this.question('💼 Describe your service/product briefly: ');
+        
+        console.log('\nLanguage preference:');
+        console.log('1. 🇦🇪 Gulf Arabic (اللهجة الخليجية)');
+        console.log('2. 🇮🇩 Indonesian (Bahasa Indonesia)');
+        console.log('3. 🇺🇸 English');
+        
+        const langChoice = await this.question('\nSelect language (1-3): ');
+        const languages = {
+            '1': 'gulf',
+            '2': 'indonesian',
+            '3': 'english'
+        };
+        this.campaign.language = languages[langChoice] || 'gulf';
         
         console.log('\nContent approach:');
         console.log('1. 🤝 Conservative (respectful, slow build)');
@@ -322,6 +336,8 @@ class CampaignBuilder {
             generated: 0
         };
         
+        const language = this.campaign.language || 'gulf';
+        
         // Generate premium content for high-priority leads
         for (const lead of highPriorityLeads) {
             try {
@@ -329,7 +345,8 @@ class CampaignBuilder {
                     lead, 
                     this.campaign.industry, 
                     this.campaign.yourService,
-                    'balanced'
+                    'balanced',
+                    language
                 );
                 
                 if (content) {
@@ -351,7 +368,8 @@ class CampaignBuilder {
                     lead, 
                     this.campaign.industry, 
                     this.campaign.yourService,
-                    this.campaign.contentStyle
+                    this.campaign.contentStyle,
+                    language
                 );
                 
                 if (content) {
