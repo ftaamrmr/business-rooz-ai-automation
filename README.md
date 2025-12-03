@@ -122,6 +122,7 @@ Mau boost penjualan pakai sistem online ordering? 📱
 - **Dual template creation** (email + WhatsApp)
 - **CSV and JSON export**
 - **Indonesian market optimization**
+- **Gulf Arabic marketing prompts** for GCC B2B lead generation (NEW)
 - **Rate limiting** to avoid blocking
 
 ### 🌐 Web Dashboard Features
@@ -146,6 +147,51 @@ Mau boost penjualan pakai sistem online ordering? 📱
 - [ ] Advanced AI prompt customization
 - [ ] Batch processing for multiple queries
 - [ ] API integrations (CRM, email marketing)
+
+---
+
+## 🌍 Gulf Arabic Marketing Prompts
+
+**NEW**: Comprehensive Gulf Arabic marketing prompts for B2B lead generation in GCC markets (Saudi Arabia, Kuwait, UAE, Bahrain).
+
+### Features
+- **7 Prompt Categories**: WhatsApp, Email, Follow-ups, Instagram, LinkedIn, Ads, Business Analysis
+- **Gulf Arabic**: Professional, formal, and clean dialect suitable for GCC business communication
+- **AI-Ready**: Compatible with OpenAI, Mistral, and other AI APIs
+- **Fully Documented**: Complete guide with examples and best practices
+
+### Quick Example
+
+```javascript
+const GulfPrompts = require('./src/gulf_prompts');
+const prompts = new GulfPrompts();
+
+// Generate WhatsApp outreach message
+const message = prompts.getWhatsAppOutreach({
+    businessName: 'شركة الابتكار التقني',
+    senderName: 'محمد العلي',
+    companyName: 'حلول الأعمال الرقمية',
+    serviceName: 'التسويق الرقمي',
+    benefit: 'زيادة المبيعات بنسبة 40%'
+});
+
+// Generate B2B email
+const email = prompts.getB2BEmail({
+    businessName: 'شركة الابتكار',
+    firstName: 'أحمد',
+    companyName: 'حلول الأعمال',
+    serviceName: 'التحول الرقمي'
+});
+```
+
+### Documentation
+- **Usage Guide**: [docs/GULF_PROMPTS_GUIDE.md](docs/GULF_PROMPTS_GUIDE.md)
+- **Example File**: [examples/gulf_prompts_example.js](examples/gulf_prompts_example.js)
+
+Run the example:
+```bash
+node examples/gulf_prompts_example.js
+```
 
 ---
 
