@@ -943,7 +943,7 @@ Make it specific to their business, include relevant market data, and create urg
     // New method to get available languages
     getAvailableLanguages() {
         return [
-            { code: 'gulf', name: 'العربية الخليجية', flag: '🇦🇪🇸🇦🇰🇼🇧🇭' },
+            { code: 'gulf', name: 'العربية الخليجية', flag: '🇸🇦' },
             { code: 'indonesian', name: 'Bahasa Indonesia', flag: '🇮🇩' },
             { code: 'english', name: 'English', flag: '🇺🇸' }
         ];
